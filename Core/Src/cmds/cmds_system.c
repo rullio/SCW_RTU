@@ -33,6 +33,33 @@
 
 #include "main.h"
 
+static void smb_cmd_scw (SYS_CMD_DEVICE_NODE* pCmdIO, int argc, char **argv)
+{
+	const void* cmdIoParam = pCmdIO->cmdIoParam;
+
+	if (argc != 1) {
+		goto USAGE;
+	}
+
+	do_scw_info_display = !do_scw_info_display;
+
+	if (do_scw_info_display == true) {
+		(*pCmdIO->pCmdApi->msg)(pCmdIO->cmdIoParam, CUI_ESC_CLR);
+		(*pCmdIO->pCmdApi->msg)(pCmdIO->cmdIoParam, CUI_ESC_CUR_HOME); osDelay(1);
+		(*pCmdIO->pCmdApi->msg)(pCmdIO->cmdIoParam, CUI_ESC_CUR_HIDE); osDelay(1);
+	}
+	else {
+		(*pCmdIO->pCmdApi->msg)(pCmdIO->cmdIoParam, CUI_ESC_CUR_SHOW);
+	}
+	return;
+
+	USAGE:
+	(*pCmdIO->pCmdApi->msg)(cmdIoParam, "scw"LINE_TERM);
+	return;
+
+	return;
+}
+
 static void smb_cmd_show (SYS_CMD_DEVICE_NODE* pCmdIO, int argc, char **argv)
 {
 	const void* cmdIoParam = pCmdIO->cmdIoParam;
@@ -93,13 +120,12 @@ static void smb_cmd_showuptime (SYS_CMD_DEVICE_NODE* pCmdIO, int argc, char **ar
 	return;
 }
 
-
 static const SYS_CMD_DESCRIPTOR    System_CommandTbl []=
 {
+		{"scw",     		smb_cmd_scw,				"\t\t- scw"},
 		{"show",     		smb_cmd_show,      			"\t\t- show timer"},
 		{"uptime",     		smb_cmd_showuptime,      	"\t\t- uptime"},
 		{"runtime",     	smb_cmd_showuptime,      	"\t\t- runtime"},
-
 };
 
 bool scw_cmd_system_add ()

@@ -140,10 +140,10 @@ bool app_entry ()
 
 	Thread_CLI_Handler = osThreadNew(scw_thread_cli, NULL, &SCW_Cli_Thread_attr);
 	assert (Thread_CLI_Handler != NULL);
-//
-//	Thread_SENSOR_Handler = osThreadNew(scw_thread_sensor, NULL, &SC_SENSOR_Thread_Attr);
-//	assert (Thread_SENSOR_Handler != NULL);
-//
+
+	Thread_SENSOR_Handler = osThreadNew(scw_thread_sensor, NULL, &SCW_SENSOR_Thread_Attr);
+	assert (Thread_SENSOR_Handler != NULL);
+
 //	Thread_ANNEX_Handler = osThreadNew(scw_thread_annex, NULL, &SC_ANNEXE_Thread_Attr);
 //	assert (Thread_ANNEX_Handler != NULL);
 

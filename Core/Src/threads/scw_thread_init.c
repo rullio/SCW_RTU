@@ -36,6 +36,40 @@
 bool osTimerList_init(osTimerEntry_t osTimerList[]);
 bool IntrList_init(IntrObjEntry_t IntrObjEntryList[]);
 
+
+/**************************************************************************************************
+ * function : HW 상태에 따라 초기 Status 정보를 구성
+ * arg : SatusObj pinter
+ * return : bool
+ **************************************************************************************************/
+static bool scw_infoObj_init(scw_infoObj_t *psio)
+{
+	strcpy (psio->fw_version, FW_VERSION);
+
+	psio->CPUID = READ_REG(SCB->CPUID);
+	psio->implementer = LL_CPUID_GetImplementer();
+	psio->variant = LL_CPUID_GetVariant();
+	psio->constant = LL_CPUID_GetConstant();
+	psio->partno = LL_CPUID_GetParNo();
+	psio->version = LL_CPUID_GetRevision();
+
+	psio->uid0 = LL_GetUID_Word0();
+	psio->uid1 = LL_GetUID_Word1();
+	psio->uid2 = LL_GetUID_Word2();
+	psio->counter_admin = 0;
+
+	assert (HAL_RTC_GetTime(&hrtc, &psio->currentTime, RTC_FORMAT_BIN) == HAL_OK);
+	assert (HAL_RTC_GetDate(&hrtc, &psio->currentDate, RTC_FORMAT_BIN) == HAL_OK);
+	assert (HAL_RTC_GetTime(&hrtc, &psio->launchTime, RTC_FORMAT_BIN) == HAL_OK);
+	assert (HAL_RTC_GetDate(&hrtc, &psio->launchDate, RTC_FORMAT_BIN) == HAL_OK);
+
+	// door switch  가 움직일 때 rising/falling edge 가 glitch 처럼 많이 발생하기 때문에 아래와 같이 timer 로 처리하기로 함.
+	psio->scw_door.door_1_status = get_door_1_status();
+	psio->scw_door.door_2_status = get_door_2_status();
+
+	return true;
+}
+
 static bool uptime_counter_begin()
 {
 	assert (osTimerList[OS_TIMER_INDEX_UPTIME_COUNT].osTimerId != NULL);
@@ -47,9 +81,14 @@ void scw_thread_init (void *arg)
 {
 	DbgTraceInit();
 
-	assert (SCW_RTC_Init() == true);
+	assert (scw_rtc_init() == true);
 	assert (IntrList_init(&IntrObjEntryList[SCW_RTU_INTR_INDEX_BEGIN]) == true);
 	assert (osTimerList_init(&osTimerList[OS_TIMER_INDEX_BEGIN]) == true);
+	assert (scw_infoObj_init(&scw_infoObj) == true);
+	assert (SHT2x_Init(&hi2c1) == true);
+	assert (adc_initial_calibration() == true);
+
+	do_scw_info_display = false;
 	scw_banner = BANNER_ECELL;
 	uptime_counter = 0;
 	assert (uptime_counter_begin() == true);

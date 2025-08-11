@@ -37,6 +37,15 @@ extern "C" {
 #include "cmsis_os.h"
 #include "timers.h"
 #include "usart.h"
+#include "rtc.h"
+#include "spi.h"
+#include "i2c.h"
+#include "adc.h"
+
+#include "stm32f1xx_ll_cortex.h"
+#include "stm32f1xx_ll_utils.h"
+#include "stm32f1xx_ll_system.h"
+#include "stm32f1xx_ll_adc.h"
 
 #include "utilities_common.h"
 #include "head_console.h"
@@ -49,10 +58,8 @@ extern "C" {
 
 #include "head_def.h"
 #include "head_type.h"
-
-
-
-
+#include "head_adc.h"
+#include "sht2x.h"
 
 
 

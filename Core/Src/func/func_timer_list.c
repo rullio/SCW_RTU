@@ -35,6 +35,11 @@
 
 #define	CONSOLE_SCAN_TIMEOUT	TIMEOUT_10_MSEC
 #define	UPTIME_COUNT_TIMEOUT	TIMEOUT_1_SEC
+#define	DOOR_CHECK_TIMEOUT		TIMEOUT_100_MSEC
+#define	HT_CHECK_TIMEOUT		TIMEOUT_1_SEC
+#define	ADC_CHECK_TIMEOUT		TIMEOUT_1_SEC
+#define	INFO_DISPLAY_TIMEOUT	TIMEOUT_1_SEC
+
 
 static void console_scan_timeout_cb (void *arg)
 {
@@ -44,6 +49,46 @@ static void console_scan_timeout_cb (void *arg)
 static void uptime_counter_timeout_cb (void *arg)
 {
 	uptime_counter++;
+}
+
+static void door_check_timeout_cb (void *arg)
+{
+	sensor_msg_t sensor_msg;
+	sensor_msg.head.type = SENSOR_MSG_DOOR_CHECK;
+	sensor_msg.head.dst = WORKM_SENSOR;
+	sensor_msg.head.src = WORKM_TIMER;
+	sensor_msg.head.len = 0;
+	osMessageQueuePut(sensorThreadQ, &sensor_msg, 0U, 0U);
+}
+
+static void ht_check_timeout_cb (void *arg)
+{
+	sensor_msg_t sensor_msg;
+	sensor_msg.head.type = SENSOR_MSG_HM_CHECK;
+	sensor_msg.head.dst = WORKM_SENSOR;
+	sensor_msg.head.src = WORKM_TIMER;
+	sensor_msg.head.len = 0;
+	osMessageQueuePut(sensorThreadQ, &sensor_msg, 0U, 0U);
+}
+
+static void adc_check_timeout_cb (void *arg)
+{
+	sensor_msg_t sensor_msg;
+	sensor_msg.head.type = SENSOR_MSG_ADC_CHECK;
+	sensor_msg.head.dst = WORKM_SENSOR;
+	sensor_msg.head.src = WORKM_TIMER;
+	sensor_msg.head.len = 0;
+	osMessageQueuePut(sensorThreadQ, &sensor_msg, 0U, 0U);
+}
+
+static void info_display_timeout_cb (void *arg)
+{
+	sensor_msg_t sensor_msg;
+	sensor_msg.head.type = SENSOR_MSG_INFO_DISPLAY;
+	sensor_msg.head.dst = WORKM_SENSOR;
+	sensor_msg.head.src = WORKM_TIMER;
+	sensor_msg.head.len = 0;
+	osMessageQueuePut(sensorThreadQ, &sensor_msg, 0U, 0U);
 }
 
 bool osTimerList_init(osTimerEntry_t osTimerList[])
@@ -70,6 +115,33 @@ bool osTimerList_init(osTimerEntry_t osTimerList[])
 	assert (osTimerList[OS_TIMER_INDEX_UPTIME_COUNT].osTimerId != NULL);
 	strcpy (osTimerList[OS_TIMER_INDEX_UPTIME_COUNT].timer_description, "OS_TIMER_INDEX_UPTIME_COUNT");
 
+	osTimerList[OS_TIMER_INDEX_DOOR_CHECK].osTimerType = osTimerOnce;
+	osTimerList[OS_TIMER_INDEX_DOOR_CHECK].timeout_tick = DOOR_CHECK_TIMEOUT;
+	osTimerList[OS_TIMER_INDEX_DOOR_CHECK].timeout_cb = door_check_timeout_cb;
+	osTimerList[OS_TIMER_INDEX_DOOR_CHECK].osTimerId = osTimerNew(osTimerList[OS_TIMER_INDEX_DOOR_CHECK].timeout_cb, osTimerList[OS_TIMER_INDEX_DOOR_CHECK].timeout_tick, NULL, NULL);
+	assert (osTimerList[OS_TIMER_INDEX_DOOR_CHECK].osTimerId != NULL);
+	strcpy (osTimerList[OS_TIMER_INDEX_DOOR_CHECK].timer_description, "OS_TIMER_INDEX_DOOR_CHECK");
+
+	osTimerList[OS_TIMER_INDEX_HT_CHECK].osTimerType = osTimerOnce;
+	osTimerList[OS_TIMER_INDEX_HT_CHECK].timeout_tick = HT_CHECK_TIMEOUT;
+	osTimerList[OS_TIMER_INDEX_HT_CHECK].timeout_cb = ht_check_timeout_cb;
+	osTimerList[OS_TIMER_INDEX_HT_CHECK].osTimerId = osTimerNew(osTimerList[OS_TIMER_INDEX_HT_CHECK].timeout_cb, osTimerList[OS_TIMER_INDEX_HT_CHECK].timeout_tick, NULL, NULL);
+	assert (osTimerList[OS_TIMER_INDEX_HT_CHECK].osTimerId != NULL);
+	strcpy (osTimerList[OS_TIMER_INDEX_HT_CHECK].timer_description, "OS_TIMER_INDEX_HT_CHECK");
+
+	osTimerList[OS_TIMER_INDEX_ADC_CHECK].osTimerType = osTimerOnce;
+	osTimerList[OS_TIMER_INDEX_ADC_CHECK].timeout_tick = ADC_CHECK_TIMEOUT;
+	osTimerList[OS_TIMER_INDEX_ADC_CHECK].timeout_cb = adc_check_timeout_cb;
+	osTimerList[OS_TIMER_INDEX_ADC_CHECK].osTimerId = osTimerNew(osTimerList[OS_TIMER_INDEX_ADC_CHECK].timeout_cb, osTimerList[OS_TIMER_INDEX_ADC_CHECK].timeout_tick, NULL, NULL);
+	assert (osTimerList[OS_TIMER_INDEX_ADC_CHECK].osTimerId != NULL);
+	strcpy (osTimerList[OS_TIMER_INDEX_ADC_CHECK].timer_description, "OS_TIMER_INDEX_ADC_CHECK");
+
+	osTimerList[OS_TIMER_INDEX_SCW_INFO_DISPLAY].osTimerType = osTimerOnce;
+	osTimerList[OS_TIMER_INDEX_SCW_INFO_DISPLAY].timeout_tick = INFO_DISPLAY_TIMEOUT;
+	osTimerList[OS_TIMER_INDEX_SCW_INFO_DISPLAY].timeout_cb = info_display_timeout_cb;
+	osTimerList[OS_TIMER_INDEX_SCW_INFO_DISPLAY].osTimerId = osTimerNew(osTimerList[OS_TIMER_INDEX_SCW_INFO_DISPLAY].timeout_cb, osTimerList[OS_TIMER_INDEX_SCW_INFO_DISPLAY].timeout_tick, NULL, NULL);
+	assert (osTimerList[OS_TIMER_INDEX_SCW_INFO_DISPLAY].osTimerId != NULL);
+	strcpy (osTimerList[OS_TIMER_INDEX_SCW_INFO_DISPLAY].timer_description, "OS_TIMER_INDEX_SCW_INFO_DISPLAY");
 
 	return true;
 }

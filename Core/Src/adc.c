@@ -177,5 +177,35 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
 }
 
 /* USER CODE BEGIN 1 */
+volatile   uint16_t   aADCxConvertedData[ADC_CONVERTED_DATA_BUFFER_SIZE]; /* ADC group regular conversion data (array of data) */
+
+bool adc_initial_calibration(void)
+{
+	uint32_t i = 0;
+
+	for (i = 0; i < ADC_CONVERTED_DATA_BUFFER_SIZE; i++) {
+		aADCxConvertedData[i] = VAR_CONVERTED_DATA_INIT_VALUE;
+	}
+
+	assert (HAL_ADCEx_Calibration_Start(&hadc1) == HAL_OK);
+
+	return true;
+}
+
+
+#define VDDA_APPLI                       ((uint16_t)3300)
+
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
+{
+	/* Computation of ADC conversions raw data to physical values           */
+	/* using LL ADC driver helper macro.                                    */
+	/* Note: ADC results are transferred into array "aADCxConvertedData"    */
+	/*       in the order of their rank in ADC sequencer.                   */
+	// 아래 나머지 변환에서 측정된 VREF 를 고정된 VDDA_APPLI 값대신 쓰기 위해서 가장 먼저 변환함..
+	scw_infoObj.scw_adc_value.AD1 			= __LL_ADC_CALC_DATA_TO_VOLTAGE(VDDA_APPLI, aADCxConvertedData[0], LL_ADC_RESOLUTION_12B);
+	scw_infoObj.scw_adc_value.AD2 			= __LL_ADC_CALC_DATA_TO_VOLTAGE(VDDA_APPLI, aADCxConvertedData[1], LL_ADC_RESOLUTION_12B);
+	scw_infoObj.scw_adc_value.AD3 			= __LL_ADC_CALC_DATA_TO_VOLTAGE(VDDA_APPLI, aADCxConvertedData[2], LL_ADC_RESOLUTION_12B);
+	scw_infoObj.scw_adc_value.AD4 			= __LL_ADC_CALC_DATA_TO_VOLTAGE(VDDA_APPLI, aADCxConvertedData[3], LL_ADC_RESOLUTION_12B);
+}
 
 /* USER CODE END 1 */

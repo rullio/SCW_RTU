@@ -46,7 +46,10 @@
 
 
 
-bool SCW_RTC_Init(void);
+bool adc_initial_calibration(void);
+scw_door_status_t get_door_1_status();
+scw_door_status_t get_door_2_status();
+bool scw_rtc_init(void);
 
 
 #endif /* INC_HEAD_FUNC_H_ */

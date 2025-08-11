@@ -126,7 +126,7 @@ void HAL_RTC_MspDeInit(RTC_HandleTypeDef* rtcHandle)
 }
 
 /* USER CODE BEGIN 1 */
-bool SCW_RTC_Init(void)
+bool scw_rtc_init(void)
 {
 	  hrtc.Instance = RTC;
 	  hrtc.Init.AsynchPrediv = RTC_AUTO_1_SECOND;

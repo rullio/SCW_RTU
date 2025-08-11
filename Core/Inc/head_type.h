@@ -59,10 +59,10 @@ typedef enum {
 	OS_TIMER_INDEX_BEGIN = 0,
 	OS_TIMER_INDEX_CLI_CONSOLE_SCAN = OS_TIMER_INDEX_BEGIN,
 	OS_TIMER_INDEX_UPTIME_COUNT,
-	OS_TIMER_INDEX_RSVD_1,
-	OS_TIMER_INDEX_RSVD_2,
-	OS_TIMER_INDEX_RSVD_3,
-	OS_TIMER_INDEX_RSVD_4,
+	OS_TIMER_INDEX_DOOR_CHECK,
+	OS_TIMER_INDEX_HT_CHECK,
+	OS_TIMER_INDEX_ADC_CHECK,
+	OS_TIMER_INDEX_SCW_INFO_DISPLAY,
 	OS_TIMER_INDEX_RSVD_5,
 	OS_TIMER_INDEX_RSVD_6,
 	OS_TIMER_INDEX_RSVD_7,
@@ -150,7 +150,97 @@ typedef enum {
 	SCW_RTU_INTR_INDEX_END,
 } scw_Rtu_Intr_Index_t;
 
+typedef enum {
+	SCW_DOOR_OPEN = 0,
+	SCW_DOOR_CLOSED,
+} scw_door_status_t;
 
+typedef struct {
+	scw_door_status_t	door_1_status;
+	scw_door_status_t	door_2_status;
+} scw_door_t;
 
+typedef struct
+{
+	float			m_tempreture;
+	float			m_humidity;
+	osTimerId_t		hm_check_timerId;
+} SHT20_INFO_t;
+
+typedef struct
+{
+	volatile uint16_t	AD1;		/* Value of voltage on GPIO pin (on which is mapped ADC channel) calculated from ADC conversion data (unit: mV) */
+	volatile uint16_t	AD2;		/* Value of voltage on GPIO pin (on which is mapped ADC channe2) calculated from ADC conversion data (unit: mV) */
+	volatile uint16_t	AD3;		/* Value of voltage on GPIO pin (on which is mapped ADC channe3) calculated from ADC conversion data (unit: mV) */
+	volatile uint16_t	AD4;		/* Value of voltage on GPIO pin (on which is mapped ADC channe4) calculated from ADC conversion data (unit: mV) */
+} scw_adc_value_t;
+
+typedef struct {
+	char				fw_version[64];
+	uint32_t			hw_version;
+	uint32_t 			CPUID;
+	uint32_t			implementer;
+	uint32_t			variant;
+	uint32_t			constant;
+	uint32_t			partno;
+	uint32_t			version;
+	uint32_t 			package_type;
+	uint32_t 			uid0;
+	uint32_t 			uid1;
+	uint32_t 			uid2;
+	uint32_t 			counter_admin;
+	RTC_DateTypeDef		currentDate;
+	RTC_TimeTypeDef 	currentTime;
+	RTC_DateTypeDef 	launchDate;
+	RTC_TimeTypeDef 	launchTime;
+	scw_door_t			scw_door;
+	SHT20_INFO_t		SHT20_INFO;
+	scw_adc_value_t		scw_adc_value;
+} scw_infoObj_t;
+
+typedef enum {
+	WORKM_BASE = 0,
+	WORKM_ROOT,
+	WORKM_CLI,
+	WORKM_SENSOR,
+	WORKM_ADC,
+	WORKM_UART1,
+	WORKM_UART2,
+	WORKM_UART3,
+	WORKM_UART4,
+	WORKM_USB,
+	WORKM_TIMER,
+	WORKM_EXTI,
+} WorkModule_Entity_t;
+
+// *****************************************************************************
+// Event for SENSOR thread
+// *****************************************************************************
+typedef enum {
+	SENSOR_MSG_BASE = 0,
+	SENSOR_MSG_DOOR_CHECK,
+	SENSOR_MSG_HM_CHECK,
+	SENSOR_MSG_ADC_CHECK,
+	SENSOR_MSG_INFO_DISPLAY,
+	SENSOR_MSG_END,
+} SENSOR_Msg_type_t;
+
+typedef struct {
+	SENSOR_Msg_type_t	type;
+	WorkModule_Entity_t	dst;
+	WorkModule_Entity_t	src;
+	uint8_t				len;
+} sensor_msg_head_t;
+
+typedef struct {
+	uint8_t				Byte[10];
+} sensor_msg_body_t;
+
+typedef struct {
+	sensor_msg_head_t 	head;
+	sensor_msg_body_t	body;
+} sensor_msg_t;
+
+typedef bool (* sensor_msg_func)(sensor_msg_t *);
 
 #endif /* INC_HEAD_TYPE_H_ */
