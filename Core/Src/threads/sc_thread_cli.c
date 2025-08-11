@@ -36,7 +36,6 @@
 #define	CONSOLE_SCAN_TIMEOUT	TIMEOUT_10_MSEC
 
 bool scw_cmd_system_add ();
-bool scw_cmd_misc_add ();
 
 void RunCmdTask(SYS_CMD_IO_DCPT* pCmdIO);
 bool uartObj_Init( void );
@@ -55,7 +54,6 @@ extern SYS_CMD_INIT _cmdInitData;
 extern SYS_CMD_DEVICE_LIST	cmdIODevList;
 
 static	uint8_t				ConsoleChar;
-static	osTimerId_t			console_scan_timerId;
 
 void RxCpltCallback(void)
 {
@@ -73,22 +71,16 @@ static bool console_init ()
 	return true;
 }
 
-
 static bool scw_cmds_add ()
 {
+	assert (scw_cmd_system_add() == true);
 	return true;
 }
 
-static void console_scan_timeout_cb (void *arg)
+static bool console_scan_begin ()
 {
-	osThreadFlagsSet(Thread_CLI_Handler, EF_CONSOLE_SCAN);
-}
-
-static bool console_scan_timer_begin ()
-{
-	console_scan_timerId = osTimerNew(console_scan_timeout_cb, osTimerOnce, NULL, NULL);
-	assert (console_scan_timerId != NULL);
-	assert (osTimerStart(console_scan_timerId, CONSOLE_SCAN_TIMEOUT) == osOK);
+	assert (osTimerList[OS_TIMER_INDEX_CLI_CONSOLE_SCAN].osTimerId != NULL);
+	assert (osTimerStart(osTimerList[OS_TIMER_INDEX_CLI_CONSOLE_SCAN].osTimerId, osTimerList[OS_TIMER_INDEX_CLI_CONSOLE_SCAN].timeout_tick) == osOK);
 	return true;
 }
 
@@ -103,7 +95,7 @@ void scw_thread_cli (void *arg)
 	assert (scw_cmds_add () == true);
 	HW_UART_Receive_IT(CFG_DEBUG_TRACE_UART, &ConsoleChar, 1U, RxCpltCallback);
 	HAL_NVIC_EnableIRQ(USART1_IRQn);
-	assert (console_scan_timer_begin () == true);
+	assert (console_scan_begin () == true);
 	Greeting();
 
 	while (1) {
@@ -112,7 +104,7 @@ void scw_thread_cli (void *arg)
 
 		if (cli_event_flag & EF_CONSOLE_SCAN) {
 			RunCmdTask(cmdIODevList.head);
-			assert (osTimerStart(console_scan_timerId, CONSOLE_SCAN_TIMEOUT) == osOK);
+			assert (osTimerStart(osTimerList[OS_TIMER_INDEX_CLI_CONSOLE_SCAN].osTimerId, osTimerList[OS_TIMER_INDEX_CLI_CONSOLE_SCAN].timeout_tick) == osOK);
 		}
 	}
 }

@@ -20,6 +20,7 @@ RM := rm -rf
 -include Core/Src/stm/subdir.mk
 -include Core/Src/func/subdir.mk
 -include Core/Src/console/subdir.mk
+-include Core/Src/cmds/subdir.mk
 -include Core/Src/subdir.mk
 -include objects.mk
 

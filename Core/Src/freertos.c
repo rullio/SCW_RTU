@@ -45,7 +45,9 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
-IntrObj_t SCWIntrObj;
+osTimerEntry_t	osTimerList[OS_TIMER_INDEX_END];
+IntrObjEntry_t IntrObjEntryList[DMA2_Channel4_5_IRQn+1];
+uint64_t			uptime_counter;
 
 /* USER CODE END Variables */
 /* Definitions for ThreadRoot */

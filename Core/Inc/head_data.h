@@ -47,7 +47,15 @@
 
 
 
+extern 	uint64_t			uptime_counter;
+extern IntrObjEntry_t IntrObjEntryList[];
+extern osTimerEntry_t	osTimerList[];
 extern scw_banner_t scw_banner;
-extern IntrObj_t SCWIntrObj;
+extern IntrObjEntry_t IntrObjEntryList[];
+extern osThreadId_t Thread_INIT_Handler;
+extern osThreadId_t Thread_CLI_Handler;
+extern osThreadId_t Thread_SENSOR_Handler;
+extern osThreadId_t Thread_ANNEX_Handler;
+
 
 #endif /* INC_HEAD_DATA_H_ */

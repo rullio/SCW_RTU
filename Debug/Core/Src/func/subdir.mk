@@ -5,13 +5,19 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../Core/Src/func/func_greeting.c 
+../Core/Src/func/func_greeting.c \
+../Core/Src/func/func_intr_list.c \
+../Core/Src/func/func_timer_list.c 
 
 OBJS += \
-./Core/Src/func/func_greeting.o 
+./Core/Src/func/func_greeting.o \
+./Core/Src/func/func_intr_list.o \
+./Core/Src/func/func_timer_list.o 
 
 C_DEPS += \
-./Core/Src/func/func_greeting.d 
+./Core/Src/func/func_greeting.d \
+./Core/Src/func/func_intr_list.d \
+./Core/Src/func/func_timer_list.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
@@ -21,7 +27,7 @@ Core/Src/func/%.o Core/Src/func/%.su Core/Src/func/%.cyclo: ../Core/Src/func/%.c
 clean: clean-Core-2f-Src-2f-func
 
 clean-Core-2f-Src-2f-func:
-	-$(RM) ./Core/Src/func/func_greeting.cyclo ./Core/Src/func/func_greeting.d ./Core/Src/func/func_greeting.o ./Core/Src/func/func_greeting.su
+	-$(RM) ./Core/Src/func/func_greeting.cyclo ./Core/Src/func/func_greeting.d ./Core/Src/func/func_greeting.o ./Core/Src/func/func_greeting.su ./Core/Src/func/func_intr_list.cyclo ./Core/Src/func/func_intr_list.d ./Core/Src/func/func_intr_list.o ./Core/Src/func/func_intr_list.su ./Core/Src/func/func_timer_list.cyclo ./Core/Src/func/func_timer_list.d ./Core/Src/func/func_timer_list.o ./Core/Src/func/func_timer_list.su
 
 .PHONY: clean-Core-2f-Src-2f-func
 

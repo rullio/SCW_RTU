@@ -23,6 +23,7 @@ C_DEPS :=
 # Every subdirectory with source files must be described here
 SUBDIRS := \
 Core/Src \
+Core/Src/cmds \
 Core/Src/console \
 Core/Src/func \
 Core/Src/stm \
