@@ -151,10 +151,19 @@ static bool sensor_msg_handler_info_display(sensor_msg_t *pq_msg)
 		printf("door_1 = %s"LINE_TERM, (scw_infoObj.scw_door.door_1_status == SCW_DOOR_OPEN)?"SCW_DOOR_OPEN  ":"SCW_DOOR_CLOSED");
 		printf("door_2 = %s"LINE_TERM, (scw_infoObj.scw_door.door_2_status == SCW_DOOR_OPEN)?"SCW_DOOR_OPEN  ":"SCW_DOOR_CLOSED");
 
-		printf(LINE_TERM"SHT20"LINE_TERM);
-		printf(" Ondo = %ld.%ldºC, RH = %ld.%ld%% RH"LINE_TERM,
-				SHT2x_GetInteger(scw_infoObj.SHT20_INFO.m_tempreture), SHT2x_GetDecimal(scw_infoObj.SHT20_INFO.m_tempreture, 1),
-				SHT2x_GetInteger(scw_infoObj.SHT20_INFO.m_humidity), SHT2x_GetDecimal(scw_infoObj.SHT20_INFO.m_humidity, 1));
+		printf(LINE_TERM"Ondo/Humidity"LINE_TERM);
+		/* Gets current temperature & relative humidity. */
+		float cel = SHT2x_GetTemperature(1);
+		/* Converts temperature to degrees Fahrenheit and Kelvin */
+		float fah = SHT2x_CelsiusToFahrenheit(cel);
+		float kel = SHT2x_CelsiusToKelvin(cel);
+		float rh = SHT2x_GetRelativeHumidity(1);
+		/* May show warning below. Ignore and proceed. */
+		printf(	" Ondo = %ld.%ldºC, %ld.%ldºF, %ld.%ld K, Humidity = %ld.%ld%% RH"LINE_TERM,
+				SHT2x_GetInteger(cel), SHT2x_GetDecimal(cel, 1),
+				SHT2x_GetInteger(fah), SHT2x_GetDecimal(fah, 1),
+				SHT2x_GetInteger(kel), SHT2x_GetDecimal(kel, 1),
+				SHT2x_GetInteger(rh), SHT2x_GetDecimal(rh, 1));
 
 		printf(LINE_TERM"ADC"LINE_TERM);
 		printf(" AD1 = %d"LINE_TERM, scw_infoObj.scw_adc_value.AD1);

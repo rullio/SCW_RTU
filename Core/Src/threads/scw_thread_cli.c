@@ -35,7 +35,8 @@
 
 #define	CONSOLE_SCAN_TIMEOUT	TIMEOUT_10_MSEC
 
-bool scw_cmd_system_add ();
+bool cmd_system_add ();
+bool cmd_board_add ();
 
 void RunCmdTask(SYS_CMD_IO_DCPT* pCmdIO);
 bool uartObj_Init( void );
@@ -73,7 +74,8 @@ static bool console_init ()
 
 static bool scw_cmds_add ()
 {
-	assert (scw_cmd_system_add() == true);
+	assert (cmd_system_add() == true);
+	assert (cmd_board_add() == true);
 	return true;
 }
 

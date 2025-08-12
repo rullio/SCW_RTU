@@ -5,12 +5,15 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../Core/Src/cmds/cmds_board.c \
 ../Core/Src/cmds/cmds_system.c 
 
 OBJS += \
+./Core/Src/cmds/cmds_board.o \
 ./Core/Src/cmds/cmds_system.o 
 
 C_DEPS += \
+./Core/Src/cmds/cmds_board.d \
 ./Core/Src/cmds/cmds_system.d 
 
 
@@ -21,7 +24,7 @@ Core/Src/cmds/%.o Core/Src/cmds/%.su Core/Src/cmds/%.cyclo: ../Core/Src/cmds/%.c
 clean: clean-Core-2f-Src-2f-cmds
 
 clean-Core-2f-Src-2f-cmds:
-	-$(RM) ./Core/Src/cmds/cmds_system.cyclo ./Core/Src/cmds/cmds_system.d ./Core/Src/cmds/cmds_system.o ./Core/Src/cmds/cmds_system.su
+	-$(RM) ./Core/Src/cmds/cmds_board.cyclo ./Core/Src/cmds/cmds_board.d ./Core/Src/cmds/cmds_board.o ./Core/Src/cmds/cmds_board.su ./Core/Src/cmds/cmds_system.cyclo ./Core/Src/cmds/cmds_system.d ./Core/Src/cmds/cmds_system.o ./Core/Src/cmds/cmds_system.su
 
 .PHONY: clean-Core-2f-Src-2f-cmds
 

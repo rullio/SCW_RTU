@@ -49,6 +49,8 @@ static void console_scan_timeout_cb (void *arg)
 static void uptime_counter_timeout_cb (void *arg)
 {
 	uptime_counter++;
+	assert (HAL_RTC_GetTime(&hrtc, &scw_infoObj.currentTime, RTC_FORMAT_BIN) == HAL_OK);
+	assert (HAL_RTC_GetDate(&hrtc, &scw_infoObj.currentDate, RTC_FORMAT_BIN) == HAL_OK);
 }
 
 static void door_check_timeout_cb (void *arg)

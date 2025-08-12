@@ -33,6 +33,181 @@
 
 #include "main.h"
 
+static void smb_cmd_clearScreen (SYS_CMD_DEVICE_NODE* pCmdIO, int argc, char **argv)
+{
+	const void* cmdIoParam = pCmdIO->cmdIoParam;
+
+	(*pCmdIO->pCmdApi->msg)(cmdIoParam,  CUI_ESC_CLR);
+	(*pCmdIO->pCmdApi->msg)(cmdIoParam,  CUI_ESC_CUR_HOME);
+	return;
+}
+
+#if 0
+typedef struct xTASK_STATUS
+{
+	TaskHandle_t xHandle;			/* The handle of the task to which the rest of the information in the structure relates. */
+	const char *pcTaskName;			/* A pointer to the task's name.  This value will be invalid if the task was deleted since the structure was populated! */ /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
+	UBaseType_t xTaskNumber;		/* A number unique to the task. */
+	eTaskState eCurrentState;		/* The state in which the task existed when the structure was populated. */
+	UBaseType_t uxCurrentPriority;	/* The priority at which the task was running (may be inherited) when the structure was populated. */
+	UBaseType_t uxBasePriority;		/* The priority to which the task will return if the task's current priority has been inherited to avoid unbounded priority inversion when obtaining a mutex.  Only valid if configUSE_MUTEXES is defined as 1 in FreeRTOSConfig.h. */
+	uint32_t ulRunTimeCounter;		/* The total run time allocated to the task so far, as defined by the run time stats clock.  See http://www.freertos.org/rtos-run-time-stats.html.  Only valid when configGENERATE_RUN_TIME_STATS is defined as 1 in FreeRTOSConfig.h. */
+	StackType_t *pxStackBase;		/* Points to the lowest address of the task's stack area. */
+	configSTACK_DEPTH_TYPE usStackHighWaterMark;	/* The minimum amount of stack space that has remained for the task since the task was created.  The closer this value is to zero the closer the task has come to overflowing its stack. */
+} TaskStatus_t;
+
+/* Task states returned by eTaskGetState. */
+typedef enum
+{
+	eRunning = 0,	/* A task is querying the state of itself, so must be running. */
+	eReady,			/* The task being queried is in a read or pending ready list. */
+	eBlocked,		/* The task being queried is in the Blocked state. */
+	eSuspended,		/* The task being queried is in the Suspended state, or is in the Blocked state with an infinite time out. */
+	eDeleted,		/* The task being queried has been deleted, but its TCB has not yet been freed. */
+	eInvalid		/* Used as an 'invalid state' value. */
+} eTaskState;
+#endif
+static void smb_cmd_taskinfo (SYS_CMD_DEVICE_NODE *pCmdIO, int argc, char **argv)
+{
+	const void* cmdIoParam = pCmdIO->cmdIoParam;
+	TaskStatus_t *pxTaskStatusArray;
+	volatile UBaseType_t uxArraySize, x;
+	unsigned long ulTotalRunTime, ulStatsAsPercentage;
+
+	uxArraySize = uxTaskGetNumberOfTasks ();
+	(*pCmdIO->pCmdApi->print)(cmdIoParam, LINE_TERM "Total %d tasks are running now.." LINE_TERM, uxArraySize);
+
+	/* Allocate a TaskStatus_t structure for each task.  An array could be allocated statically at compile time. */
+	pxTaskStatusArray = pvPortMalloc( uxArraySize * sizeof( TaskStatus_t ) );
+
+	if( pxTaskStatusArray != NULL ) {
+		/* Generate raw status information about each task. */
+		uxArraySize = uxTaskGetSystemState( pxTaskStatusArray, uxArraySize,	&ulTotalRunTime );
+		for( x = 0; x < uxArraySize; x++ ) {
+			(*pCmdIO->pCmdApi->print)(cmdIoParam, LINE_TERM "The %dth : %s", x+1, pxTaskStatusArray[ x ].pcTaskName);
+			(*pCmdIO->pCmdApi->print)(cmdIoParam, LINE_TERM "xTaskNumber = %d", pxTaskStatusArray[ x ].xTaskNumber);
+			switch (pxTaskStatusArray[ x ].eCurrentState) {
+			case eRunning : (*pCmdIO->pCmdApi->print)(cmdIoParam, LINE_TERM " %s is eRunning", pxTaskStatusArray[ x ].pcTaskName); break;
+			case eReady : (*pCmdIO->pCmdApi->print)(cmdIoParam, LINE_TERM " %s is eReady", pxTaskStatusArray[ x ].pcTaskName); break;
+			case eBlocked : (*pCmdIO->pCmdApi->print)(cmdIoParam, LINE_TERM " %s is eBlocked", pxTaskStatusArray[ x ].pcTaskName); break;
+			case eSuspended : (*pCmdIO->pCmdApi->print)(cmdIoParam, LINE_TERM " %s is eSuspended", pxTaskStatusArray[ x ].pcTaskName); break;
+			case eDeleted : (*pCmdIO->pCmdApi->print)(cmdIoParam, LINE_TERM " %s is eDeleted", pxTaskStatusArray[ x ].pcTaskName); break;
+			case eInvalid : (*pCmdIO->pCmdApi->print)(cmdIoParam, LINE_TERM " %s is eInvalid", pxTaskStatusArray[ x ].pcTaskName); break;
+			default : (*pCmdIO->pCmdApi->print)(cmdIoParam, LINE_TERM " %s' eCurrentState is UNKNOWN !!", pxTaskStatusArray[ x ].pcTaskName); break;
+			}
+			(*pCmdIO->pCmdApi->print)(cmdIoParam, LINE_TERM "uxCurrentPriority = %d", pxTaskStatusArray[ x ].uxCurrentPriority);
+			(*pCmdIO->pCmdApi->print)(cmdIoParam, LINE_TERM "uxBasePriority = %d", pxTaskStatusArray[ x ].uxBasePriority);
+			(*pCmdIO->pCmdApi->print)(cmdIoParam, LINE_TERM "ulRunTimeCounter = %d", pxTaskStatusArray[ x ].ulRunTimeCounter);
+			(*pCmdIO->pCmdApi->print)(cmdIoParam, LINE_TERM "pxStackBase = %#06"PRIx16, pxTaskStatusArray[ x ].usStackHighWaterMark);
+			(*pCmdIO->pCmdApi->print)(cmdIoParam, LINE_TERM "usStackHighWaterMark = %d", pxTaskStatusArray[ x ].usStackHighWaterMark);
+			(*pCmdIO->pCmdApi->msg)(cmdIoParam, LINE_TERM);
+			//			osDelay(1);	// display 하다가 잘리는 현상 방지용. Queue buffer 를 8K 로 만들었으니 이제 필요없다.
+		}
+
+		// 아래는 running time 만 표시하는 루틴..
+		/* For percentage calculations. */
+		ulTotalRunTime /= 100UL;
+
+		/* Avoid divide by zero errors. */
+		if( ulTotalRunTime > 0 ) {
+			/* For each populated position in the pxTaskStatusArray array,
+	         format the raw data as human readable ASCII data. */
+			for( x = 0; x < uxArraySize; x++ ) {
+				/* What percentage of the total run time has the task used?
+	            This will always be rounded down to the nearest integer.
+	            ulTotalRunTimeDiv100 has already been divided by 100. */
+				ulStatsAsPercentage = pxTaskStatusArray[ x ].ulRunTimeCounter / ulTotalRunTime;
+
+				if( ulStatsAsPercentage > 0UL )	{
+					(*pCmdIO->pCmdApi->print)(cmdIoParam, LINE_TERM "%stt%lutt%lu%%rn",	\
+							pxTaskStatusArray[ x ].pcTaskName, pxTaskStatusArray[ x ].ulRunTimeCounter,	ulStatsAsPercentage );
+				}
+				else {
+					/* If the percentage is zero here then the task has
+	               consumed less than 1% of the total run time. */
+					(*pCmdIO->pCmdApi->print)(cmdIoParam, LINE_TERM "%stt%lutt<1%%rn", \
+							pxTaskStatusArray[ x ].pcTaskName, pxTaskStatusArray[ x ].ulRunTimeCounter);
+				}
+			}
+		}
+		else {
+			(*pCmdIO->pCmdApi->msg)(cmdIoParam, LINE_TERM "Actual running time is < 1");
+			(*pCmdIO->pCmdApi->msg)(cmdIoParam, LINE_TERM);
+		}
+
+		/* The array is no longer needed, free the memory it consumes. */
+		vPortFree( pxTaskStatusArray );
+	}
+	else {
+		(*pCmdIO->pCmdApi->msg)(cmdIoParam, LINE_TERM "pvPortMalloc () return NULL");
+		(*pCmdIO->pCmdApi->msg)(cmdIoParam, LINE_TERM);
+	}
+
+	return;
+}
+
+static void smb_cmd_set_exti (SYS_CMD_DEVICE_NODE *pCmdIO, int argc, char **argv)
+{
+	const void* cmdIoParam = pCmdIO->cmdIoParam;
+	uint32_t exti_no;
+	EXTI_HandleTypeDef exti_handle;
+
+	if (argc != 2) {
+		(*pCmdIO->pCmdApi->msg)(cmdIoParam, "Usage : setexti exti_no (0 ~ 15)"LINE_TERM);
+		return;
+	}
+
+	exti_no = strtoul (argv[1], NULL, 0);
+
+	if (exti_no > 15) {
+		(*pCmdIO->pCmdApi->msg)(cmdIoParam, "Usage : setexti exti_no (0 ~ 15)"LINE_TERM);
+		return;
+	}
+
+#if 0
+#define EXTI_LINE_0                         (EXTI_GPIO     | EXTI_REG1 | EXTI_EVENT | 0x00u)
+#define EXTI_LINE_1                         (EXTI_GPIO     | EXTI_REG1 | EXTI_EVENT | 0x01u)
+#define EXTI_LINE_2                         (EXTI_GPIO     | EXTI_REG1 | EXTI_EVENT | 0x02u)
+#define EXTI_LINE_3                         (EXTI_GPIO     | EXTI_REG1 | EXTI_EVENT | 0x03u)
+#define EXTI_LINE_4                         (EXTI_GPIO     | EXTI_REG1 | EXTI_EVENT | 0x04u)
+#define EXTI_LINE_5                         (EXTI_GPIO     | EXTI_REG1 | EXTI_EVENT | 0x05u)
+#define EXTI_LINE_6                         (EXTI_GPIO     | EXTI_REG1 | EXTI_EVENT | 0x06u)
+#define EXTI_LINE_7                         (EXTI_GPIO     | EXTI_REG1 | EXTI_EVENT | 0x07u)
+#define EXTI_LINE_8                         (EXTI_GPIO     | EXTI_REG1 | EXTI_EVENT | 0x08u)
+#define EXTI_LINE_9                         (EXTI_GPIO     | EXTI_REG1 | EXTI_EVENT | 0x09u)
+#define EXTI_LINE_10                        (EXTI_GPIO     | EXTI_REG1 | EXTI_EVENT | 0x0Au)
+#define EXTI_LINE_11                        (EXTI_GPIO     | EXTI_REG1 | EXTI_EVENT | 0x0Bu)
+#define EXTI_LINE_12                        (EXTI_GPIO     | EXTI_REG1 | EXTI_EVENT | 0x0Cu)
+#define EXTI_LINE_13                        (EXTI_GPIO     | EXTI_REG1 | EXTI_EVENT | 0x0Du)
+#define EXTI_LINE_14                        (EXTI_GPIO     | EXTI_REG1 | EXTI_EVENT | 0x0Eu)
+#define EXTI_LINE_15                        (EXTI_GPIO     | EXTI_REG1 | EXTI_EVENT | 0x0Fu)
+#endif
+
+	(*pCmdIO->pCmdApi->print)(cmdIoParam, "Let EXTI_LINE_%d happen"LINE_TERM, exti_no);
+
+	switch (exti_no) {
+	case 0 : exti_handle.Line = EXTI_LINE_0; break;
+	case 1 : exti_handle.Line = EXTI_LINE_1; break;
+	case 2 : exti_handle.Line = EXTI_LINE_2; break;
+	case 3 : exti_handle.Line = EXTI_LINE_3; break;
+	case 4 : exti_handle.Line = EXTI_LINE_4; break;
+	case 5 : exti_handle.Line = EXTI_LINE_5; break;
+	case 6 : exti_handle.Line = EXTI_LINE_6; break;
+	case 7 : exti_handle.Line = EXTI_LINE_7; break;
+	case 8 : exti_handle.Line = EXTI_LINE_8; break;
+	case 9 : exti_handle.Line = EXTI_LINE_9; break;
+	case 10 : exti_handle.Line = EXTI_LINE_10; break;
+	case 11 : exti_handle.Line = EXTI_LINE_11; break;
+	case 12 : exti_handle.Line = EXTI_LINE_12; break;
+	case 13 : exti_handle.Line = EXTI_LINE_13; break;
+	case 14 : exti_handle.Line = EXTI_LINE_14; break;
+	case 15 : exti_handle.Line = EXTI_LINE_15; break;
+	default : assert (0 == 1); return; break;
+	}
+
+	HAL_EXTI_GenerateSWI(&exti_handle);
+}
+
 static void smb_cmd_scw (SYS_CMD_DEVICE_NODE* pCmdIO, int argc, char **argv)
 {
 	const void* cmdIoParam = pCmdIO->cmdIoParam;
@@ -60,6 +235,71 @@ static void smb_cmd_scw (SYS_CMD_DEVICE_NODE* pCmdIO, int argc, char **argv)
 	return;
 }
 
+static irq_no_name_t irq_no_name[DMA2_Channel4_5_IRQn+1] = {
+		{WWDG_IRQn, "WWDG_IRQn"},
+		{PVD_IRQn, "PVD_IRQn"},
+		{TAMPER_IRQn, "TAMPER_IRQn"},
+		{RTC_IRQn, "RTC_IRQn"},
+		{FLASH_IRQn, "FLASH_IRQn"},
+		{RCC_IRQn, "RCC_IRQn"},
+		{EXTI0_IRQn, "EXTI0_IRQn"},
+		{EXTI1_IRQn, "EXTI1_IRQn"},
+		{EXTI2_IRQn, "EXTI2_IRQn"},
+		{EXTI3_IRQn, "EXTI3_IRQn"},
+		{EXTI4_IRQn, "EXTI4_IRQn"},
+		{DMA1_Channel1_IRQn, "DMA1_Channel1_IRQn"},
+		{DMA1_Channel2_IRQn, "DMA1_Channel2_IRQn"},
+		{DMA1_Channel3_IRQn, "DMA1_Channel3_IRQn"},
+		{DMA1_Channel4_IRQn, "DMA1_Channel4_IRQn"},
+		{DMA1_Channel5_IRQn, "DMA1_Channel5_IRQn"},
+		{DMA1_Channel6_IRQn, "DMA1_Channel6_IRQn"},
+		{DMA1_Channel7_IRQn, "DMA1_Channel7_IRQn"},
+		{ADC1_2_IRQn, "ADC1_2_IRQn"},
+		{USB_HP_CAN1_TX_IRQn, "USB_HP_CAN1_TX_IRQn"},
+		{USB_LP_CAN1_RX0_IRQn, "USB_LP_CAN1_RX0_IRQn"},
+		{CAN1_RX1_IRQn, "CAN1_RX1_IRQn"},
+		{CAN1_SCE_IRQn, "CAN1_SCE_IRQn"},
+		{EXTI9_5_IRQn, "EXTI9_5_IRQn"},
+		{TIM1_UP_IRQn, "TIM1_UP_IRQn"},
+		{TIM1_TRG_COM_IRQn, "TIM1_TRG_COM_IRQn"},
+		{TIM1_CC_IRQn, "TIM1_CC_IRQn"},
+		{TIM2_IRQn, "TIM2_IRQn"},
+		{TIM3_IRQn, "TIM3_IRQn"},
+		{TIM4_IRQn, "TIM4_IRQn"},
+		{I2C1_EV_IRQn, "I2C1_EV_IRQn"},
+		{I2C1_ER_IRQn, "I2C1_ER_IRQn"},
+		{I2C2_EV_IRQn, "I2C2_EV_IRQn"},
+		{I2C2_ER_IRQn, "I2C2_ER_IRQn"},
+		{SPI1_IRQn, "SPI1_IRQn"},
+		{SPI2_IRQn, "SPI2_IRQn"},
+		{USART1_IRQn, "USART1_IRQn"},
+		{USART2_IRQn, "USART2_IRQn"},
+		{USART3_IRQn, "USART3_IRQn"},
+		{EXTI15_10_IRQn, "EXTI15_10_IRQn"},
+		{RTC_Alarm_IRQn, "RTC_Alarm_IRQn"},
+		{USBWakeUp_IRQn, "USBWakeUp_IRQn"},
+		{TIM8_BRK_IRQn, "TIM8_BRK_IRQn"},
+		{TIM8_UP_IRQn, "TIM8_UP_IRQn"},
+		{TIM8_TRG_COM_IRQn, "TIM8_TRG_COM_IRQn"},
+		{TIM8_CC_IRQn, "TIM8_CC_IRQn"},
+		{ADC3_IRQn, "ADC3_IRQn"},
+		{FSMC_IRQn, "FSMC_IRQn"},
+		{SDIO_IRQn, "SDIO_IRQn"},
+		{TIM5_IRQn, "TIM5_IRQn"},
+		{SPI3_IRQn, "SPI3_IRQn"},
+		{UART4_IRQn, "UART4_IRQn"},
+		{UART5_IRQn, "UART5_IRQn"},
+		{TIM6_IRQn, "TIM6_IRQn"},
+		{TIM7_IRQn, "TIM7_IRQn"},
+		{DMA2_Channel1_IRQn, "DMA2_Channel1_IRQn"},
+		{DMA2_Channel2_IRQn, "DMA2_Channel2_IRQn"},
+		{DMA2_Channel3_IRQn, "DMA2_Channel3_IRQn"},
+		{DMA2_Channel4_5_IRQn, "DMA2_Channel4_5_IRQn"},
+};
+
+static uint8_t aShowTime[16] = "hh:ms:ss";
+static uint8_t aShowDate[16] = "dd-mm-yyyy";
+
 static void smb_cmd_show (SYS_CMD_DEVICE_NODE* pCmdIO, int argc, char **argv)
 {
 	const void* cmdIoParam = pCmdIO->cmdIoParam;
@@ -79,8 +319,8 @@ static void smb_cmd_show (SYS_CMD_DEVICE_NODE* pCmdIO, int argc, char **argv)
 		(*pCmdIO->pCmdApi->msg)(cmdIoParam, " IntrObjList"LINE_TERM);
 		for (uint32_t i = 0 ; i < SCW_RTU_INTR_INDEX_END ; i++) {
 			if (strlen(IntrObjEntryList[i].IntrName) < 15) {
-			(*pCmdIO->pCmdApi->print)(cmdIoParam, " %2d : %10d \t%s \t\t%s"LINE_TERM,			\
-					IntrObjEntryList[i].IntrNo, IntrObjEntryList[i].IntrCount, IntrObjEntryList[i].IntrName, IntrObjEntryList[i].IntrDesc);
+				(*pCmdIO->pCmdApi->print)(cmdIoParam, " %2d : %10d \t%s \t\t%s"LINE_TERM,			\
+						IntrObjEntryList[i].IntrNo, IntrObjEntryList[i].IntrCount, IntrObjEntryList[i].IntrName, IntrObjEntryList[i].IntrDesc);
 			}
 			else {
 				(*pCmdIO->pCmdApi->print)(cmdIoParam, " %2d : %10d \t%s \t%s"LINE_TERM,			\
@@ -88,10 +328,143 @@ static void smb_cmd_show (SYS_CMD_DEVICE_NODE* pCmdIO, int argc, char **argv)
 			}
 		}
 	}
+	if (!strcmp(argv[1], "system")) {
+		uint32_t CPUID;
+		uint32_t implementer, variant, constant, partno, version;
+		uint32_t uid0, uid1, uid2;
+		osVersion_t osv;
+		osStatus_t status;
+		char infobuf[100];
+
+		// CPU ID
+		CPUID = READ_REG(SCB->CPUID);
+		(*pCmdIO->pCmdApi->print)(cmdIoParam, "CPUID=%#010"PRIx32 LINE_TERM, CPUID);
+
+		implementer = LL_CPUID_GetImplementer();
+		variant = LL_CPUID_GetVariant();
+		constant = LL_CPUID_GetConstant();
+		partno = LL_CPUID_GetParNo();
+		version = LL_CPUID_GetRevision();
+
+
+#if 0
+		(*pCmdIO->pCmdApi->print)(cmdIoParam, "implementer = %ld"LINE_TERM, implementer);
+		(*pCmdIO->pCmdApi->print)(cmdIoParam, "variant = %ld"LINE_TERM, variant);
+		(*pCmdIO->pCmdApi->print)(cmdIoParam, "constant = %ld"LINE_TERM, constant);
+		(*pCmdIO->pCmdApi->print)(cmdIoParam, "partno = %ld"LINE_TERM, partno);
+		(*pCmdIO->pCmdApi->print)(cmdIoParam, "version = %ld"LINE_TERM, version);
+#endif
+
+		assert (implementer == 0x41);
+		assert (variant == 1);
+		assert (constant == 0x0f);
+		assert (partno == 0xC23);
+		assert (version == 0x1);
+
+		if (implementer == 0x41) (*pCmdIO->pCmdApi->msg)(cmdIoParam, "implementer = Arm"LINE_TERM);
+		if (partno == 0xC23) (*pCmdIO->pCmdApi->msg)(cmdIoParam, "partno = Cortex-M3"LINE_TERM);
+
+
+		// UID. Reference manual 의 Device electronic signature 참조할 것.
+		uid0 = LL_GetUID_Word0();
+		uid1 = LL_GetUID_Word1();
+		uid2 = LL_GetUID_Word2();
+		(*pCmdIO->pCmdApi->print)(cmdIoParam, "uid0=%#010"PRIx32 LINE_TERM, uid0);	// X and Y coordinates on the wafer
+		(*pCmdIO->pCmdApi->print)(cmdIoParam, "uid1=%#010"PRIx32 LINE_TERM, uid1);	// LOT_NUM[23:0], WAFER_NUM[7:0]
+		(*pCmdIO->pCmdApi->print)(cmdIoParam, "uid2=%#010"PRIx32 LINE_TERM, uid2);	// Lot number (ASCII encoded)
+
+		// OS
+		status = osKernelGetInfo(&osv, infobuf, sizeof(infobuf));
+		assert (status == osOK);
+		(*pCmdIO->pCmdApi->print)(cmdIoParam, "Kernel Information: %s"LINE_TERM, infobuf);
+		(*pCmdIO->pCmdApi->print)(cmdIoParam, "Kernel Version    : %d"LINE_TERM, osv.kernel);
+		(*pCmdIO->pCmdApi->print)(cmdIoParam, "Kernel API Version: %d"LINE_TERM, osv.api);
+	}
+	if (!strcmp(argv[1], "nvic")) {
+		uint32_t ISERn, ICERn, ISPRn, ICPRn, IABRn, STIR;
+
+		for (uint32_t i = 0 ; i < 8 ; i++) {
+			ISERn = READ_REG(NVIC->ISER[i]);
+			(*pCmdIO->pCmdApi->print)(cmdIoParam, "ISER[%d]=%#010"PRIx32 LINE_TERM, i, ISERn);
+		}
+
+		for (uint32_t i = 0 ; i < 8 ; i++) {
+			ICERn = READ_REG(NVIC->ICER[i]);
+			(*pCmdIO->pCmdApi->print)(cmdIoParam, "ICER[%d]=%#010"PRIx32 LINE_TERM, i, ICERn);
+		}
+
+		for (uint32_t i = 0 ; i < 8 ; i++) {
+			ISPRn = READ_REG(NVIC->ISPR[i]);
+			(*pCmdIO->pCmdApi->print)(cmdIoParam, "ISPR[%d]=%#010"PRIx32 LINE_TERM, i, ISPRn);
+		}
+
+		for (uint32_t i = 0 ; i < 8 ; i++) {
+			ICPRn = READ_REG(NVIC->ICPR[i]);
+			(*pCmdIO->pCmdApi->print)(cmdIoParam, "ICPR[%d]=%#010"PRIx32 LINE_TERM, i, ICPRn);
+		}
+
+		for (uint32_t i = 0 ; i < 8 ; i++) {
+			IABRn = READ_REG(NVIC->IABR[i]);
+			(*pCmdIO->pCmdApi->print)(cmdIoParam, "IABR[%d]=%#010"PRIx32 LINE_TERM, i, IABRn);
+		}
+
+#if 0
+		uint32_t IPn;
+		for (uint32_t i = 0 ; i < 240 ; i++) {
+			IPn = READ_REG(NVIC->IP[i]);
+			(*pCmdIO->pCmdApi->print)(cmdIoParam, "IP[%3d]=%#010"PRIx32 LINE_TERM, i, IPn);
+		}
+#endif
+
+		STIR = READ_REG(NVIC->STIR);
+		(*pCmdIO->pCmdApi->print)(cmdIoParam, "STIR=%#010"PRIx32 LINE_TERM, STIR);
+
+		//	HAL_NVIC_GetActive() 를 사용해서 각 intr 이 개별적으로 enalbe 되어 있는지 표시할 것..
+
+		ISERn = READ_REG(NVIC->ISER[0]);
+		for (uint32_t irq_no = WWDG_IRQn ; irq_no < I2C1_ER_IRQn ; irq_no++) {
+			if ((ISERn & (1 << irq_no)) != 0) {
+				(*pCmdIO->pCmdApi->print)(cmdIoParam, "irq_no %2d (%s) is Enabled"LINE_TERM, irq_no, irq_no_name[irq_no].irq_name);
+			}
+		}
+#if 0
+		ISERn = READ_REG(NVIC->ISER[1]);
+		for (uint32_t irq_no = I2C1_ER_IRQn ; irq_no < COMP_IRQn ; irq_no++) {
+			if ((ISERn & (1 << (irq_no-32))) != 0) {
+				(*pCmdIO->pCmdApi->print)(cmdIoParam, "irq_no %2d (%s) is Enabled"LINE_TERM, irq_no, irq_no_name[irq_no].irq_name);
+			}
+		}
+
+		ISERn = READ_REG(NVIC->ISER[2]);
+		for (uint32_t irq_no = COMP_IRQn ; irq_no < DMA2D_IRQn+1 ; irq_no++) {
+			if ((ISERn & (1 << (irq_no-64))) != 0) {
+				(*pCmdIO->pCmdApi->print)(cmdIoParam, "irq_no %2d (%s) is Enabled"LINE_TERM, irq_no, irq_no_name[irq_no].irq_name);
+			}
+		}
+#endif
+	}
+	if (!strcmp(argv[1], "time")) {
+		/* Display date Format : mm-dd-yy */
+		sprintf((char *)aShowDate, "%4d/%02d/%02d", 2000 + scw_infoObj.currentDate.Year, scw_infoObj.currentDate.Month, scw_infoObj.currentDate.Date);
+		(*pCmdIO->pCmdApi->print)(cmdIoParam, LINE_TERM " %s", aShowDate);
+		switch (scw_infoObj.currentDate.WeekDay) {
+		case RTC_WEEKDAY_MONDAY : 		sprintf((char *)aShowDate, "%s", "(Mon)"); break;
+		case RTC_WEEKDAY_TUESDAY : 		sprintf((char *)aShowDate, "%s", "(Tue)"); break;
+		case RTC_WEEKDAY_WEDNESDAY : 	sprintf((char *)aShowDate, "%s", "(Wed)"); break;
+		case RTC_WEEKDAY_THURSDAY : 	sprintf((char *)aShowDate, "%s", "(Thu)"); break;
+		case RTC_WEEKDAY_FRIDAY : 		sprintf((char *)aShowDate, "%s", "(Fri)"); break;
+		case RTC_WEEKDAY_SATURDAY : 	sprintf((char *)aShowDate, "%s", "(Sat)"); break;
+		case RTC_WEEKDAY_SUNDAY : 		sprintf((char *)aShowDate, "%s", "(Sun)"); break;
+		default : 						sprintf((char *)aShowDate, "%s", "(NULL Day)"); break;
+		}
+		(*pCmdIO->pCmdApi->print)(cmdIoParam, " %s", aShowDate);
+		sprintf((char *)aShowTime, " %02d:%02d:%02d %s", scw_infoObj.currentTime.Hours, scw_infoObj.currentTime.Minutes, scw_infoObj.currentTime.Seconds, (scw_infoObj.currentTime.Hours<12)?"am":"pm");
+		(*pCmdIO->pCmdApi->print)(cmdIoParam, "%s"LINE_TERM LINE_TERM , aShowTime);
+	}
 	return;
 
 	USAGE:
-	(*pCmdIO->pCmdApi->msg)(cmdIoParam, " show timer/intr/");
+	(*pCmdIO->pCmdApi->msg)(cmdIoParam, " show timer/intr/system/nvic/time"LINE_TERM);
 	return;
 }
 
@@ -122,13 +495,20 @@ static void smb_cmd_showuptime (SYS_CMD_DEVICE_NODE* pCmdIO, int argc, char **ar
 
 static const SYS_CMD_DESCRIPTOR    System_CommandTbl []=
 {
+		{"clear",       	smb_cmd_clearScreen,		"\t\t- clear screen"},
+		{"c",       		smb_cmd_clearScreen,		"\t\t\t- clear screen"},
+
+		{"taskinfo",		smb_cmd_taskinfo,			"\t\t- taskinfo"},
+		{"setexti",    		smb_cmd_set_exti,       	"\t\t- setexti"},
+
 		{"scw",     		smb_cmd_scw,				"\t\t- scw"},
-		{"show",     		smb_cmd_show,      			"\t\t- show timer"},
+		{"show",     		smb_cmd_show,      			"\t\t- show timer/intr/system/nvic/time"},
 		{"uptime",     		smb_cmd_showuptime,      	"\t\t- uptime"},
 		{"runtime",     	smb_cmd_showuptime,      	"\t\t- runtime"},
+
 };
 
-bool scw_cmd_system_add ()
+bool cmd_system_add ()
 {
 	assert (SYS_CMD_ADDGRP(System_CommandTbl, sizeof(System_CommandTbl)/sizeof(*System_CommandTbl), "system", ": system command group") == true);
 	return true;

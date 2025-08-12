@@ -136,6 +136,36 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN Private defines */
 
+// Relay control
+#define ssr1_on				HAL_GPIO_WritePin(SSR_1_GPIO_Port, SSR_1_Pin, GPIO_PIN_RESET)
+#define ssr1_off			HAL_GPIO_WritePin(SSR_1_GPIO_Port, SSR_1_Pin, GPIO_PIN_SET)
+
+#define ssr2_on				HAL_GPIO_WritePin(SSR_2_GPIO_Port, SSR_2_Pin, GPIO_PIN_RESET)
+#define ssr2_off			HAL_GPIO_WritePin(SSR_2_GPIO_Port, SSR_2_Pin, GPIO_PIN_SET)
+
+#define ssr3_on				HAL_GPIO_WritePin(SSR_3_GPIO_Port, SSR_3_Pin, GPIO_PIN_RESET)
+#define ssr3_off			HAL_GPIO_WritePin(SSR_3_GPIO_Port, SSR_3_Pin, GPIO_PIN_SET)
+
+#define ssr4_on				HAL_GPIO_WritePin(SSR_4_GPIO_Port, SSR_4_Pin, GPIO_PIN_RESET)
+#define ssr4_off			HAL_GPIO_WritePin(SSR_4_GPIO_Port, SSR_4_Pin, GPIO_PIN_SET)
+
+// Audio amp control
+#define mute_on				HAL_GPIO_WritePin(MUTE_GPIO_Port, MUTE_Pin, GPIO_PIN_SET)
+#define mute_off			HAL_GPIO_WritePin(MUTE_GPIO_Port, MUTE_Pin, GPIO_PIN_RESET)
+
+// 5V, 12V control
+#define _5v_sw1_on			HAL_GPIO_WritePin(_5V_SW1_GPIO_Port, _5V_SW1_Pin, GPIO_PIN_SET)
+#define _5v_sw1_off			HAL_GPIO_WritePin(_5V_SW1_GPIO_Port, _5V_SW1_Pin, GPIO_PIN_RESET)
+
+#define _5v_sw2_on			HAL_GPIO_WritePin(_5V_SW2_GPIO_Port, _5V_SW2_Pin, GPIO_PIN_SET)
+#define _5v_sw2_off			HAL_GPIO_WritePin(_5V_SW2_GPIO_Port, _5V_SW2_Pin, GPIO_PIN_RESET)
+
+#define _12v_sw1_on			HAL_GPIO_WritePin(_12V_SW1_GPIO_Port, _12V_SW1_Pin, GPIO_PIN_SET)
+#define _12v_sw1_off		HAL_GPIO_WritePin(_12V_SW1_GPIO_Port, _12V_SW1_Pin, GPIO_PIN_RESET)
+
+#define _12v_sw2_on			HAL_GPIO_WritePin(_12V_SW2_GPIO_Port, _12V_SW2_Pin, GPIO_PIN_SET)
+#define _12v_sw2_off		HAL_GPIO_WritePin(_12V_SW2_GPIO_Port, _12V_SW2_Pin, GPIO_PIN_RESET)
+
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

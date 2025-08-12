@@ -243,4 +243,10 @@ typedef struct {
 
 typedef bool (* sensor_msg_func)(sensor_msg_t *);
 
+typedef struct {
+	uint32_t irq_no;
+	char irq_name[30];
+} irq_no_name_t;
+
+
 #endif /* INC_HEAD_TYPE_H_ */

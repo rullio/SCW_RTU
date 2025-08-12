@@ -77,6 +77,16 @@ static bool uptime_counter_begin()
 	return true;
 }
 
+static bool relay_io_init()
+{
+	ssr1_off;
+	ssr2_off;
+	ssr3_off;
+	ssr4_off;
+
+	return true;
+}
+
 void scw_thread_init (void *arg)
 {
 	DbgTraceInit();
@@ -86,6 +96,7 @@ void scw_thread_init (void *arg)
 	assert (osTimerList_init(&osTimerList[OS_TIMER_INDEX_BEGIN]) == true);
 	assert (scw_infoObj_init(&scw_infoObj) == true);
 	assert (SHT2x_Init(&hi2c1) == true);
+	assert (relay_io_init() == true);
 	assert (adc_initial_calibration() == true);
 
 	do_scw_info_display = false;

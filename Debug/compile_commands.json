@@ -11,6 +11,11 @@
   },
   {
     "directory": "D:/work/WorkTree/Scratch/SCW_RTU",
+    "command": "arm-none-eabi-gcc \"D:/work/WorkTree/Scratch/SCW_RTU/Core/Src/cmds/cmds_board.c\" -mcpu\u003dcortex-m3 -std\u003dgnu11 -g3 -DDEBUG \u0027-DFW_VERSION\u003d\"V_1_00_00\"\u0027 -DUSE_HAL_DRIVER -DSTM32F103xE -c -I../Core/Inc -I../Core/Src/stm -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3 -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity --specs\u003dnano.specs -mfloat-abi\u003dsoft -mthumb -o \"D:/work/WorkTree/Scratch/SCW_RTU/Debug/Core/Src/cmds/cmds_board.o\"",
+    "file": "D:/work/WorkTree/Scratch/SCW_RTU/Core/Src/cmds/cmds_board.c"
+  },
+  {
+    "directory": "D:/work/WorkTree/Scratch/SCW_RTU",
     "command": "arm-none-eabi-gcc \"D:/work/WorkTree/Scratch/SCW_RTU/Core/Src/cmds/cmds_system.c\" -mcpu\u003dcortex-m3 -std\u003dgnu11 -g3 -DDEBUG \u0027-DFW_VERSION\u003d\"V_1_00_00\"\u0027 -DUSE_HAL_DRIVER -DSTM32F103xE -c -I../Core/Inc -I../Core/Src/stm -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3 -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity --specs\u003dnano.specs -mfloat-abi\u003dsoft -mthumb -o \"D:/work/WorkTree/Scratch/SCW_RTU/Debug/Core/Src/cmds/cmds_system.o\"",
     "file": "D:/work/WorkTree/Scratch/SCW_RTU/Core/Src/cmds/cmds_system.c"
   },
