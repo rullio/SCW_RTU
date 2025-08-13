@@ -1,0 +1,7 @@
+../Core/Src/func/func_greeting.c:44:13:show_banner_dsn	8	static
+../Core/Src/func/func_greeting.c:58:13:show_banner_ecell	8	static
+../Core/Src/func/func_greeting.c:73:13:show_banner_smart	8	static
+../Core/Src/func/func_greeting.c:87:13:show_banner_pee	8	static
+../Core/Src/func/func_greeting.c:101:13:show_banner_shit	8	static
+../Core/Src/func/func_greeting.c:115:13:show_banner_ballet	8	static
+../Core/Src/func/func_greeting.c:169:6:Greeting	8	static

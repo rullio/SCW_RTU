@@ -52,7 +52,7 @@ typedef struct {
 	osTimerType_t		osTimerType;
 	uint32_t			timeout_tick;
 	func_timeout_cb		timeout_cb;
-	char				timer_description[100];
+	char				timer_description[50];
 } osTimerEntry_t;
 
 typedef enum {
@@ -76,10 +76,10 @@ typedef enum {
 } osTimerIndex_t;
 
 typedef struct {
-	uint32_t			IntrNo;
+	bool				Enabled;
 	uint32_t			IntrCount;
-	char				IntrName[100];
-	char				IntrDesc[100];
+	char				IntrName[50];
+	char				IntrDesc[50];
 } IntrObjEntry_t;
 
 typedef enum {
@@ -87,63 +87,63 @@ typedef enum {
 
 	// Copied from stm32f103ex.h
 	SCW_RTU_INTR_INDEX_WWDG_IRQn			= SCW_RTU_INTR_INDEX_BEGIN,      /*!< Window WatchDog Interrupt                            */
-	SCW_RTU_INTR_INDEX_PVD_IRQn				,      /*!< PVD through EXTI Line detection Interrupt            */
-	SCW_RTU_INTR_INDEX_TAMPER_IRQn			,      /*!< Tamper Interrupt                                     */
+//	SCW_RTU_INTR_INDEX_PVD_IRQn				,      /*!< PVD through EXTI Line detection Interrupt            */
+//	SCW_RTU_INTR_INDEX_TAMPER_IRQn			,      /*!< Tamper Interrupt                                     */
 	SCW_RTU_INTR_INDEX_RTC_IRQn				,      /*!< RTC global Interrupt                                 */
-	SCW_RTU_INTR_INDEX_FLASH_IRQn			,      /*!< FLASH global Interrupt                               */
-	SCW_RTU_INTR_INDEX_RCC_IRQn				,      /*!< RCC global Interrupt                                 */
-	SCW_RTU_INTR_INDEX_EXTI0_IRQn			,      /*!< EXTI Line0 Interrupt                                 */
-	SCW_RTU_INTR_INDEX_EXTI1_IRQn			,      /*!< EXTI Line1 Interrupt                                 */
-	SCW_RTU_INTR_INDEX_EXTI2_IRQn			,      /*!< EXTI Line2 Interrupt                                 */
-	SCW_RTU_INTR_INDEX_EXTI3_IRQn			,      /*!< EXTI Line3 Interrupt                                 */
-	SCW_RTU_INTR_INDEX_EXTI4_IRQn			,     /*!< EXTI Line4 Interrupt                                 */
+//	SCW_RTU_INTR_INDEX_FLASH_IRQn			,      /*!< FLASH global Interrupt                               */
+//	SCW_RTU_INTR_INDEX_RCC_IRQn				,      /*!< RCC global Interrupt                                 */
+//	SCW_RTU_INTR_INDEX_EXTI0_IRQn			,      /*!< EXTI Line0 Interrupt                                 */
+//	SCW_RTU_INTR_INDEX_EXTI1_IRQn			,      /*!< EXTI Line1 Interrupt                                 */
+//	SCW_RTU_INTR_INDEX_EXTI2_IRQn			,      /*!< EXTI Line2 Interrupt                                 */
+//	SCW_RTU_INTR_INDEX_EXTI3_IRQn			,      /*!< EXTI Line3 Interrupt                                 */
+//	SCW_RTU_INTR_INDEX_EXTI4_IRQn			,     /*!< EXTI Line4 Interrupt                                 */
 	SCW_RTU_INTR_INDEX_DMA1_Channel1_IRQn	,     /*!< DMA1 Channel 1 global Interrupt                      */
-	SCW_RTU_INTR_INDEX_DMA1_Channel2_IRQn	,     /*!< DMA1 Channel 2 global Interrupt                      */
-	SCW_RTU_INTR_INDEX_DMA1_Channel3_IRQn	,     /*!< DMA1 Channel 3 global Interrupt                      */
+//	SCW_RTU_INTR_INDEX_DMA1_Channel2_IRQn	,     /*!< DMA1 Channel 2 global Interrupt                      */
+//	SCW_RTU_INTR_INDEX_DMA1_Channel3_IRQn	,     /*!< DMA1 Channel 3 global Interrupt                      */
 	SCW_RTU_INTR_INDEX_DMA1_Channel4_IRQn	,     /*!< DMA1 Channel 4 global Interrupt                      */
-	SCW_RTU_INTR_INDEX_DMA1_Channel5_IRQn	,     /*!< DMA1 Channel 5 global Interrupt                      */
-	SCW_RTU_INTR_INDEX_DMA1_Channel6_IRQn	,     /*!< DMA1 Channel 6 global Interrupt                      */
-	SCW_RTU_INTR_INDEX_DMA1_Channel7_IRQn	,     /*!< DMA1 Channel 7 global Interrupt                      */
+//	SCW_RTU_INTR_INDEX_DMA1_Channel5_IRQn	,     /*!< DMA1 Channel 5 global Interrupt                      */
+//	SCW_RTU_INTR_INDEX_DMA1_Channel6_IRQn	,     /*!< DMA1 Channel 6 global Interrupt                      */
+//	SCW_RTU_INTR_INDEX_DMA1_Channel7_IRQn	,     /*!< DMA1 Channel 7 global Interrupt                      */
 	SCW_RTU_INTR_INDEX_ADC1_2_IRQn			,     /*!< ADC1 and ADC2 global Interrupt                       */
-	SCW_RTU_INTR_INDEX_USB_HP_CAN1_TX_IRQn	,     /*!< USB Device High Priority or CAN1 TX Interrupts       */
-	SCW_RTU_INTR_INDEX_USB_LP_CAN1_RX0_IRQn	,     /*!< USB Device Low Priority or CAN1 RX0 Interrupts       */
-	SCW_RTU_INTR_INDEX_CAN1_RX1_IRQn		,     /*!< CAN1 RX1 Interrupt                                   */
-	SCW_RTU_INTR_INDEX_CAN1_SCE_IRQn		,     /*!< CAN1 SCE Interrupt                                   */
-	SCW_RTU_INTR_INDEX_EXTI9_5_IRQn			,     /*!< External Line[9:5] Interrupts                        */
-	SCW_RTU_INTR_INDEX_TIM1_BRK_IRQn		,     /*!< TIM1 Break Interrupt                                 */
-	SCW_RTU_INTR_INDEX_TIM1_UP_IRQn			,     /*!< TIM1 Update Interrupt                                */
-	SCW_RTU_INTR_INDEX_TIM1_TRG_COM_IRQn	,     /*!< TIM1 Trigger and Commutation Interrupt               */
-	SCW_RTU_INTR_INDEX_TIM1_CC_IRQn			,     /*!< TIM1 Capture Compare Interrupt                       */
-	SCW_RTU_INTR_INDEX_TIM2_IRQn			,     /*!< TIM2 global Interrupt                                */
-	SCW_RTU_INTR_INDEX_TIM3_IRQn			,     /*!< TIM3 global Interrupt                                */
-	SCW_RTU_INTR_INDEX_TIM4_IRQn			,     /*!< TIM4 global Interrupt                                */
+//	SCW_RTU_INTR_INDEX_USB_HP_CAN1_TX_IRQn	,     /*!< USB Device High Priority or CAN1 TX Interrupts       */
+//	SCW_RTU_INTR_INDEX_USB_LP_CAN1_RX0_IRQn	,     /*!< USB Device Low Priority or CAN1 RX0 Interrupts       */
+//	SCW_RTU_INTR_INDEX_CAN1_RX1_IRQn		,     /*!< CAN1 RX1 Interrupt                                   */
+//	SCW_RTU_INTR_INDEX_CAN1_SCE_IRQn		,     /*!< CAN1 SCE Interrupt                                   */
+//	SCW_RTU_INTR_INDEX_EXTI9_5_IRQn			,     /*!< External Line[9:5] Interrupts                        */
+//	SCW_RTU_INTR_INDEX_TIM1_BRK_IRQn		,     /*!< TIM1 Break Interrupt                                 */
+//	SCW_RTU_INTR_INDEX_TIM1_UP_IRQn			,     /*!< TIM1 Update Interrupt                                */
+//	SCW_RTU_INTR_INDEX_TIM1_TRG_COM_IRQn	,     /*!< TIM1 Trigger and Commutation Interrupt               */
+//	SCW_RTU_INTR_INDEX_TIM1_CC_IRQn			,     /*!< TIM1 Capture Compare Interrupt                       */
+//	SCW_RTU_INTR_INDEX_TIM2_IRQn			,     /*!< TIM2 global Interrupt                                */
+//	SCW_RTU_INTR_INDEX_TIM3_IRQn			,     /*!< TIM3 global Interrupt                                */
+//	SCW_RTU_INTR_INDEX_TIM4_IRQn			,     /*!< TIM4 global Interrupt                                */
 	SCW_RTU_INTR_INDEX_I2C1_EV_IRQn			,     /*!< I2C1 Event Interrupt                                 */
 	SCW_RTU_INTR_INDEX_I2C1_ER_IRQn			,     /*!< I2C1 Error Interrupt                                 */
-	SCW_RTU_INTR_INDEX_I2C2_EV_IRQn			,     /*!< I2C2 Event Interrupt                                 */
-	SCW_RTU_INTR_INDEX_I2C2_ER_IRQn			,     /*!< I2C2 Error Interrupt                                 */
-	SCW_RTU_INTR_INDEX_SPI1_IRQn			,     /*!< SPI1 global Interrupt                                */
-	SCW_RTU_INTR_INDEX_SPI2_IRQn			,     /*!< SPI2 global Interrupt                                */
+//	SCW_RTU_INTR_INDEX_I2C2_EV_IRQn			,     /*!< I2C2 Event Interrupt                                 */
+//	SCW_RTU_INTR_INDEX_I2C2_ER_IRQn			,     /*!< I2C2 Error Interrupt                                 */
+//	SCW_RTU_INTR_INDEX_SPI1_IRQn			,     /*!< SPI1 global Interrupt                                */
+//	SCW_RTU_INTR_INDEX_SPI2_IRQn			,     /*!< SPI2 global Interrupt                                */
 	SCW_RTU_INTR_INDEX_USART1_IRQn			,     /*!< USART1 global Interrupt                              */
-	SCW_RTU_INTR_INDEX_USART2_IRQn			,     /*!< USART2 global Interrupt                              */
-	SCW_RTU_INTR_INDEX_USART3_IRQn			,     /*!< USART3 global Interrupt                              */
-	SCW_RTU_INTR_INDEX_EXTI15_10_IRQn0		,     /*!< External Line[15:10] Interrupts                      */
+//	SCW_RTU_INTR_INDEX_USART2_IRQn			,     /*!< USART2 global Interrupt                              */
+//	SCW_RTU_INTR_INDEX_USART3_IRQn			,     /*!< USART3 global Interrupt                              */
+//	SCW_RTU_INTR_INDEX_EXTI15_10_IRQn0		,     /*!< External Line[15:10] Interrupts                      */
 	SCW_RTU_INTR_INDEX_RTC_Alarm_IRQn		,     /*!< RTC Alarm through EXTI Line Interrupt                */
-	SCW_RTU_INTR_INDEX_USBWakeUp_IRQn		,     /*!< USB Device WakeUp from suspend through EXTI Line Interrupt */
-	SCW_RTU_INTR_INDEX_TIM8_BRK_IRQn		,     /*!< TIM8 Break Interrupt                                 */
+//	SCW_RTU_INTR_INDEX_USBWakeUp_IRQn		,     /*!< USB Device WakeUp from suspend through EXTI Line Interrupt */
+//	SCW_RTU_INTR_INDEX_TIM8_BRK_IRQn		,     /*!< TIM8 Break Interrupt                                 */
 	SCW_RTU_INTR_INDEX_TIM8_UP_IRQn			,     /*!< TIM8 Update Interrupt                                */
-	SCW_RTU_INTR_INDEX_TIM8_TRG_COM_IRQn	,     /*!< TIM8 Trigger and Commutation Interrupt               */
-	SCW_RTU_INTR_INDEX_TIM8_CC_IRQn			,     /*!< TIM8 Capture Compare Interrupt                       */
-	SCW_RTU_INTR_INDEX_ADC3_IRQn			,     /*!< ADC3 global Interrupt                                */
-	SCW_RTU_INTR_INDEX_FSMC_IRQn			,     /*!< FSMC global Interrupt                                */
-	SCW_RTU_INTR_INDEX_SDIO_IRQn			,     /*!< SDIO global Interrupt                                */
-	SCW_RTU_INTR_INDEX_TIM5_IRQn			,     /*!< TIM5 global Interrupt                                */
-	SCW_RTU_INTR_INDEX_SPI3_IRQn			,     /*!< SPI3 global Interrupt                                */
+//	SCW_RTU_INTR_INDEX_TIM8_TRG_COM_IRQn	,     /*!< TIM8 Trigger and Commutation Interrupt               */
+//	SCW_RTU_INTR_INDEX_TIM8_CC_IRQn			,     /*!< TIM8 Capture Compare Interrupt                       */
+//	SCW_RTU_INTR_INDEX_ADC3_IRQn			,     /*!< ADC3 global Interrupt                                */
+//	SCW_RTU_INTR_INDEX_FSMC_IRQn			,     /*!< FSMC global Interrupt                                */
+//	SCW_RTU_INTR_INDEX_SDIO_IRQn			,     /*!< SDIO global Interrupt                                */
+//	SCW_RTU_INTR_INDEX_TIM5_IRQn			,     /*!< TIM5 global Interrupt                                */
+//	SCW_RTU_INTR_INDEX_SPI3_IRQn			,     /*!< SPI3 global Interrupt                                */
 	SCW_RTU_INTR_INDEX_UART4_IRQn			,     /*!< UART4 global Interrupt                               */
 	SCW_RTU_INTR_INDEX_UART5_IRQn			,     /*!< UART5 global Interrupt                               */
-	SCW_RTU_INTR_INDEX_TIM6_IRQn			,     /*!< TIM6 global Interrupt                                */
-	SCW_RTU_INTR_INDEX_TIM7_IRQn			,     /*!< TIM7 global Interrupt                                */
-	SCW_RTU_INTR_INDEX_DMA2_Channel1_IRQn	,     /*!< DMA2 Channel 1 global Interrupt                      */
-	SCW_RTU_INTR_INDEX_DMA2_Channel2_IRQn	,     /*!< DMA2 Channel 2 global Interrupt                      */
+//	SCW_RTU_INTR_INDEX_TIM6_IRQn			,     /*!< TIM6 global Interrupt                                */
+//	SCW_RTU_INTR_INDEX_TIM7_IRQn			,     /*!< TIM7 global Interrupt                                */
+//	SCW_RTU_INTR_INDEX_DMA2_Channel1_IRQn	,     /*!< DMA2 Channel 1 global Interrupt                      */
+//	SCW_RTU_INTR_INDEX_DMA2_Channel2_IRQn	,     /*!< DMA2 Channel 2 global Interrupt                      */
 	SCW_RTU_INTR_INDEX_DMA2_Channel3_IRQn	,     /*!< DMA2 Channel 3 global Interrupt                      */
 	SCW_RTU_INTR_INDEX_DMA2_Channel4_5_IRQn	,     /*!< DMA2 Channel 4 and Channel 5 global Interrupt        */
 
@@ -203,6 +203,7 @@ typedef enum {
 	WORKM_ROOT,
 	WORKM_CLI,
 	WORKM_SENSOR,
+	WORKM_SUJI,
 	WORKM_ADC,
 	WORKM_UART1,
 	WORKM_UART2,
@@ -243,10 +244,62 @@ typedef struct {
 
 typedef bool (* sensor_msg_func)(sensor_msg_t *);
 
+// *****************************************************************************
+// Event for SUJI thread
+// *****************************************************************************
+#define SUJI_MSG_Q_DEPTH			8
+#define SUJI_RX_BUFF_SIZE			16U
+#define SUJI_TX_BUFF_SIZE			64U
+
+typedef enum {
+	SUJI_MSG_BASE = 0,
+	SUJI_MSG_COMMAND,
+	SUJI_MSG_END,
+} SUJI_Msg_type_t;
+
 typedef struct {
-	uint32_t irq_no;
-	char irq_name[30];
-} irq_no_name_t;
+	SUJI_Msg_type_t		type;
+	WorkModule_Entity_t	dst;
+	WorkModule_Entity_t	src;
+	uint8_t				len;
+} suji_msg_head_t;
+
+typedef struct {
+	uint8_t				Byte[SUJI_RX_BUFF_SIZE];
+} suji_msg_body_t;
+
+typedef struct {
+	suji_msg_head_t 	head;
+	suji_msg_body_t		body;
+} suji_msg_t;
+
+typedef bool (* suji_msg_func)(suji_msg_t *);
+
+
+#define STX                     ((uint8_t)0x02)  /* start of 1024-byte data packet */
+#define ETX                     ((uint8_t)0x03)  /* end of transmission */
+
+typedef enum {
+	OPCODE_POWER_RESET			= 0x11,
+	OPCODE_RTU_VERSION			= 0x12,
+	OPCODE_TEMPERATURE			= 0x21,
+	OPCODE_HUMIDITY				= 0x22,
+	OPCODE_WATCHDOG_USE			= 0x31,
+	OPCODE_WATCHDOG_SET			= 0x32,
+	OPCODE_FAN_TEMP_SET			= 0x41,
+	OPCODE_HEATER_TEMP_SET		= 0x42,
+	OPCODE_ADV_PANEL_LAMP_SET	= 0x63,
+	OPCODE_XAVIER_CONTROL		= 0x65,
+	OPCODE_LAMP_POST_CONTROL	= 0x66,
+	OPCODE_STATUS_INFO			= 0xF1,
+
+} suji_command_opcode_type_t;
+
+typedef enum {
+	OPCODE_DOOR_EVENT			= 0x51,
+
+} suji_event_opcode_type_t;
+
 
 
 #endif /* INC_HEAD_TYPE_H_ */

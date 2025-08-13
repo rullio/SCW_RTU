@@ -1,0 +1,13 @@
+../Core/Src/cmds/cmds_board.c:36:13:scw_cmd_pcreset	4
+../Core/Src/cmds/cmds_board.c:58:13:scw_cmd_ssr1	4
+../Core/Src/cmds/cmds_board.c:74:13:scw_cmd_ssr2	4
+../Core/Src/cmds/cmds_board.c:90:13:scw_cmd_ssr3	4
+../Core/Src/cmds/cmds_board.c:106:13:scw_cmd_ssr4	4
+../Core/Src/cmds/cmds_board.c:122:13:scw_cmd_5v_sw1	4
+../Core/Src/cmds/cmds_board.c:139:13:scw_cmd_5v_sw2	4
+../Core/Src/cmds/cmds_board.c:156:13:scw_cmd_12v_sw1	4
+../Core/Src/cmds/cmds_board.c:173:13:scw_cmd_12v_sw2	4
+../Core/Src/cmds/cmds_board.c:190:13:scw_cmd_sht2x	2
+../Core/Src/cmds/cmds_board.c:215:13:scw_cmd_mute	4
+../Core/Src/cmds/cmds_board.c:232:13:scw_cmd_test	2
+../Core/Src/cmds/cmds_board.c:278:6:cmd_board_add	1

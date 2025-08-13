@@ -46,16 +46,16 @@
 
 
 
-
 extern bool			do_scw_info_display;
 extern volatile   uint16_t   aADCxConvertedData[ADC_CONVERTED_DATA_BUFFER_SIZE]; /* ADC group regular conversion data (array of data) */
 extern osMessageQueueId_t		sensorThreadQ;
+extern osMessageQueueId_t		sujiThreadQ;
 extern scw_infoObj_t scw_infoObj;
 extern 	uint64_t			uptime_counter;
-extern IntrObjEntry_t IntrObjEntryList[];
-extern osTimerEntry_t	osTimerList[];
 extern scw_banner_t scw_banner;
+extern osTimerEntry_t	osTimerList[];
 extern IntrObjEntry_t IntrObjEntryList[];
+
 extern osThreadId_t Thread_INIT_Handler;
 extern osThreadId_t Thread_CLI_Handler;
 extern osThreadId_t Thread_SENSOR_Handler;

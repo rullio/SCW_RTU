@@ -1,0 +1,7 @@
+../Core/Src/trace/dbg_trace.c:56:13:DbgTraceGetFileName	3
+../Core/Src/trace/dbg_trace.c:77:6:DbgTraceBuffer	2
+../Core/Src/trace/dbg_trace.c:97:13:DbgTrace_TxCpltCallback	2
+../Core/Src/trace/dbg_trace.c:131:6:DbgTraceInit	1
+../Core/Src/trace/dbg_trace.c:151:8:_write	1
+../Core/Src/trace/dbg_trace.c:162:8:DbgTraceWrite	7
+../Core/Src/trace/dbg_trace.c:207:6:DbgOutputTraces	1

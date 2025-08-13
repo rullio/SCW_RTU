@@ -46,7 +46,6 @@
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
 osTimerEntry_t	osTimerList[OS_TIMER_INDEX_END];
-IntrObjEntry_t	IntrObjEntryList[DMA2_Channel4_5_IRQn+1];
 uint64_t		uptime_counter;
 scw_infoObj_t	scw_infoObj;
 bool			do_scw_info_display;

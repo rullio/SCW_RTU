@@ -1,0 +1,4 @@
+../Core/Src/stm/stm_logging.c:47:24:logRegion	5
+../Core/Src/stm/stm_logging.c:80:27:levelToString	5
+../Core/Src/stm/stm_logging.c:110:24:logLevel	1
+../Core/Src/stm/stm_logging.c:143:6:logApplication	2

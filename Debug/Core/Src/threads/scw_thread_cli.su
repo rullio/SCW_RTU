@@ -1,0 +1,5 @@
+../Core/Src/threads/scw_thread_cli.c:59:6:RxCpltCallback	8	static
+../Core/Src/threads/scw_thread_cli.c:65:13:console_init	8	static
+../Core/Src/threads/scw_thread_cli.c:75:13:scw_cmds_add	8	static
+../Core/Src/threads/scw_thread_cli.c:82:13:console_scan_begin	8	static
+../Core/Src/threads/scw_thread_cli.c:89:6:scw_thread_cli	24	static

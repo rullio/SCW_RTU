@@ -34,7 +34,6 @@
 #include "main.h"
 
 bool osTimerList_init(osTimerEntry_t osTimerList[]);
-bool IntrList_init(IntrObjEntry_t IntrObjEntryList[]);
 
 
 /**************************************************************************************************
@@ -92,7 +91,6 @@ void scw_thread_init (void *arg)
 	DbgTraceInit();
 
 	assert (scw_rtc_init() == true);
-	assert (IntrList_init(&IntrObjEntryList[SCW_RTU_INTR_INDEX_BEGIN]) == true);
 	assert (osTimerList_init(&osTimerList[OS_TIMER_INDEX_BEGIN]) == true);
 	assert (scw_infoObj_init(&scw_infoObj) == true);
 	assert (SHT2x_Init(&hi2c1) == true);

@@ -235,68 +235,6 @@ static void smb_cmd_scw (SYS_CMD_DEVICE_NODE* pCmdIO, int argc, char **argv)
 	return;
 }
 
-static irq_no_name_t irq_no_name[DMA2_Channel4_5_IRQn+1] = {
-		{WWDG_IRQn, "WWDG_IRQn"},
-		{PVD_IRQn, "PVD_IRQn"},
-		{TAMPER_IRQn, "TAMPER_IRQn"},
-		{RTC_IRQn, "RTC_IRQn"},
-		{FLASH_IRQn, "FLASH_IRQn"},
-		{RCC_IRQn, "RCC_IRQn"},
-		{EXTI0_IRQn, "EXTI0_IRQn"},
-		{EXTI1_IRQn, "EXTI1_IRQn"},
-		{EXTI2_IRQn, "EXTI2_IRQn"},
-		{EXTI3_IRQn, "EXTI3_IRQn"},
-		{EXTI4_IRQn, "EXTI4_IRQn"},
-		{DMA1_Channel1_IRQn, "DMA1_Channel1_IRQn"},
-		{DMA1_Channel2_IRQn, "DMA1_Channel2_IRQn"},
-		{DMA1_Channel3_IRQn, "DMA1_Channel3_IRQn"},
-		{DMA1_Channel4_IRQn, "DMA1_Channel4_IRQn"},
-		{DMA1_Channel5_IRQn, "DMA1_Channel5_IRQn"},
-		{DMA1_Channel6_IRQn, "DMA1_Channel6_IRQn"},
-		{DMA1_Channel7_IRQn, "DMA1_Channel7_IRQn"},
-		{ADC1_2_IRQn, "ADC1_2_IRQn"},
-		{USB_HP_CAN1_TX_IRQn, "USB_HP_CAN1_TX_IRQn"},
-		{USB_LP_CAN1_RX0_IRQn, "USB_LP_CAN1_RX0_IRQn"},
-		{CAN1_RX1_IRQn, "CAN1_RX1_IRQn"},
-		{CAN1_SCE_IRQn, "CAN1_SCE_IRQn"},
-		{EXTI9_5_IRQn, "EXTI9_5_IRQn"},
-		{TIM1_UP_IRQn, "TIM1_UP_IRQn"},
-		{TIM1_TRG_COM_IRQn, "TIM1_TRG_COM_IRQn"},
-		{TIM1_CC_IRQn, "TIM1_CC_IRQn"},
-		{TIM2_IRQn, "TIM2_IRQn"},
-		{TIM3_IRQn, "TIM3_IRQn"},
-		{TIM4_IRQn, "TIM4_IRQn"},
-		{I2C1_EV_IRQn, "I2C1_EV_IRQn"},
-		{I2C1_ER_IRQn, "I2C1_ER_IRQn"},
-		{I2C2_EV_IRQn, "I2C2_EV_IRQn"},
-		{I2C2_ER_IRQn, "I2C2_ER_IRQn"},
-		{SPI1_IRQn, "SPI1_IRQn"},
-		{SPI2_IRQn, "SPI2_IRQn"},
-		{USART1_IRQn, "USART1_IRQn"},
-		{USART2_IRQn, "USART2_IRQn"},
-		{USART3_IRQn, "USART3_IRQn"},
-		{EXTI15_10_IRQn, "EXTI15_10_IRQn"},
-		{RTC_Alarm_IRQn, "RTC_Alarm_IRQn"},
-		{USBWakeUp_IRQn, "USBWakeUp_IRQn"},
-		{TIM8_BRK_IRQn, "TIM8_BRK_IRQn"},
-		{TIM8_UP_IRQn, "TIM8_UP_IRQn"},
-		{TIM8_TRG_COM_IRQn, "TIM8_TRG_COM_IRQn"},
-		{TIM8_CC_IRQn, "TIM8_CC_IRQn"},
-		{ADC3_IRQn, "ADC3_IRQn"},
-		{FSMC_IRQn, "FSMC_IRQn"},
-		{SDIO_IRQn, "SDIO_IRQn"},
-		{TIM5_IRQn, "TIM5_IRQn"},
-		{SPI3_IRQn, "SPI3_IRQn"},
-		{UART4_IRQn, "UART4_IRQn"},
-		{UART5_IRQn, "UART5_IRQn"},
-		{TIM6_IRQn, "TIM6_IRQn"},
-		{TIM7_IRQn, "TIM7_IRQn"},
-		{DMA2_Channel1_IRQn, "DMA2_Channel1_IRQn"},
-		{DMA2_Channel2_IRQn, "DMA2_Channel2_IRQn"},
-		{DMA2_Channel3_IRQn, "DMA2_Channel3_IRQn"},
-		{DMA2_Channel4_5_IRQn, "DMA2_Channel4_5_IRQn"},
-};
-
 static uint8_t aShowTime[16] = "hh:ms:ss";
 static uint8_t aShowDate[16] = "dd-mm-yyyy";
 
@@ -317,14 +255,14 @@ static void smb_cmd_show (SYS_CMD_DEVICE_NODE* pCmdIO, int argc, char **argv)
 
 	if (!strcmp(argv[1], "intr")) {
 		(*pCmdIO->pCmdApi->msg)(cmdIoParam, " IntrObjList"LINE_TERM);
-		for (uint32_t i = 0 ; i < SCW_RTU_INTR_INDEX_END ; i++) {
+		for (uint32_t i = SCW_RTU_INTR_INDEX_BEGIN ; i < SCW_RTU_INTR_INDEX_END ; i++) {
 			if (strlen(IntrObjEntryList[i].IntrName) < 15) {
-				(*pCmdIO->pCmdApi->print)(cmdIoParam, " %2d : %10d \t%s \t\t%s"LINE_TERM,			\
-						IntrObjEntryList[i].IntrNo, IntrObjEntryList[i].IntrCount, IntrObjEntryList[i].IntrName, IntrObjEntryList[i].IntrDesc);
+				(*pCmdIO->pCmdApi->print)(cmdIoParam, " %10d \t%s \t\t%s"LINE_TERM,			\
+						IntrObjEntryList[i].IntrCount, IntrObjEntryList[i].IntrName, IntrObjEntryList[i].IntrDesc);
 			}
 			else {
-				(*pCmdIO->pCmdApi->print)(cmdIoParam, " %2d : %10d \t%s \t%s"LINE_TERM,			\
-						IntrObjEntryList[i].IntrNo, IntrObjEntryList[i].IntrCount, IntrObjEntryList[i].IntrName, IntrObjEntryList[i].IntrDesc);
+				(*pCmdIO->pCmdApi->print)(cmdIoParam, " %10d \t%s \t%s"LINE_TERM,			\
+						IntrObjEntryList[i].IntrCount, IntrObjEntryList[i].IntrName, IntrObjEntryList[i].IntrDesc);
 			}
 		}
 	}
@@ -380,69 +318,6 @@ static void smb_cmd_show (SYS_CMD_DEVICE_NODE* pCmdIO, int argc, char **argv)
 		(*pCmdIO->pCmdApi->print)(cmdIoParam, "Kernel Version    : %d"LINE_TERM, osv.kernel);
 		(*pCmdIO->pCmdApi->print)(cmdIoParam, "Kernel API Version: %d"LINE_TERM, osv.api);
 	}
-	if (!strcmp(argv[1], "nvic")) {
-		uint32_t ISERn, ICERn, ISPRn, ICPRn, IABRn, STIR;
-
-		for (uint32_t i = 0 ; i < 8 ; i++) {
-			ISERn = READ_REG(NVIC->ISER[i]);
-			(*pCmdIO->pCmdApi->print)(cmdIoParam, "ISER[%d]=%#010"PRIx32 LINE_TERM, i, ISERn);
-		}
-
-		for (uint32_t i = 0 ; i < 8 ; i++) {
-			ICERn = READ_REG(NVIC->ICER[i]);
-			(*pCmdIO->pCmdApi->print)(cmdIoParam, "ICER[%d]=%#010"PRIx32 LINE_TERM, i, ICERn);
-		}
-
-		for (uint32_t i = 0 ; i < 8 ; i++) {
-			ISPRn = READ_REG(NVIC->ISPR[i]);
-			(*pCmdIO->pCmdApi->print)(cmdIoParam, "ISPR[%d]=%#010"PRIx32 LINE_TERM, i, ISPRn);
-		}
-
-		for (uint32_t i = 0 ; i < 8 ; i++) {
-			ICPRn = READ_REG(NVIC->ICPR[i]);
-			(*pCmdIO->pCmdApi->print)(cmdIoParam, "ICPR[%d]=%#010"PRIx32 LINE_TERM, i, ICPRn);
-		}
-
-		for (uint32_t i = 0 ; i < 8 ; i++) {
-			IABRn = READ_REG(NVIC->IABR[i]);
-			(*pCmdIO->pCmdApi->print)(cmdIoParam, "IABR[%d]=%#010"PRIx32 LINE_TERM, i, IABRn);
-		}
-
-#if 0
-		uint32_t IPn;
-		for (uint32_t i = 0 ; i < 240 ; i++) {
-			IPn = READ_REG(NVIC->IP[i]);
-			(*pCmdIO->pCmdApi->print)(cmdIoParam, "IP[%3d]=%#010"PRIx32 LINE_TERM, i, IPn);
-		}
-#endif
-
-		STIR = READ_REG(NVIC->STIR);
-		(*pCmdIO->pCmdApi->print)(cmdIoParam, "STIR=%#010"PRIx32 LINE_TERM, STIR);
-
-		//	HAL_NVIC_GetActive() 를 사용해서 각 intr 이 개별적으로 enalbe 되어 있는지 표시할 것..
-
-		ISERn = READ_REG(NVIC->ISER[0]);
-		for (uint32_t irq_no = WWDG_IRQn ; irq_no < I2C1_ER_IRQn ; irq_no++) {
-			if ((ISERn & (1 << irq_no)) != 0) {
-				(*pCmdIO->pCmdApi->print)(cmdIoParam, "irq_no %2d (%s) is Enabled"LINE_TERM, irq_no, irq_no_name[irq_no].irq_name);
-			}
-		}
-#if 0
-		ISERn = READ_REG(NVIC->ISER[1]);
-		for (uint32_t irq_no = I2C1_ER_IRQn ; irq_no < COMP_IRQn ; irq_no++) {
-			if ((ISERn & (1 << (irq_no-32))) != 0) {
-				(*pCmdIO->pCmdApi->print)(cmdIoParam, "irq_no %2d (%s) is Enabled"LINE_TERM, irq_no, irq_no_name[irq_no].irq_name);
-			}
-		}
-
-		ISERn = READ_REG(NVIC->ISER[2]);
-		for (uint32_t irq_no = COMP_IRQn ; irq_no < DMA2D_IRQn+1 ; irq_no++) {
-			if ((ISERn & (1 << (irq_no-64))) != 0) {
-				(*pCmdIO->pCmdApi->print)(cmdIoParam, "irq_no %2d (%s) is Enabled"LINE_TERM, irq_no, irq_no_name[irq_no].irq_name);
-			}
-		}
-#endif
-	}
 	if (!strcmp(argv[1], "time")) {
 		/* Display date Format : mm-dd-yy */
 		sprintf((char *)aShowDate, "%4d/%02d/%02d", 2000 + scw_infoObj.currentDate.Year, scw_infoObj.currentDate.Month, scw_infoObj.currentDate.Date);
@@ -464,7 +339,7 @@ static void smb_cmd_show (SYS_CMD_DEVICE_NODE* pCmdIO, int argc, char **argv)
 	return;
 
 	USAGE:
-	(*pCmdIO->pCmdApi->msg)(cmdIoParam, " show timer/intr/system/nvic/time"LINE_TERM);
+	(*pCmdIO->pCmdApi->msg)(cmdIoParam, " show timer/intr/system/time"LINE_TERM);
 	return;
 }
 
@@ -502,7 +377,7 @@ static const SYS_CMD_DESCRIPTOR    System_CommandTbl []=
 		{"setexti",    		smb_cmd_set_exti,       	"\t\t- setexti"},
 
 		{"scw",     		smb_cmd_scw,				"\t\t- scw"},
-		{"show",     		smb_cmd_show,      			"\t\t- show timer/intr/system/nvic/time"},
+		{"show",     		smb_cmd_show,      			"\t\t- show timer/intr/system/time"},
 		{"uptime",     		smb_cmd_showuptime,      	"\t\t- uptime"},
 		{"runtime",     	smb_cmd_showuptime,      	"\t\t- runtime"},
 

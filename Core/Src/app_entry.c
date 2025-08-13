@@ -36,10 +36,10 @@
 osThreadId_t Thread_INIT_Handler;
 osThreadId_t Thread_CLI_Handler;
 osThreadId_t Thread_SENSOR_Handler;
-osThreadId_t Thread_ANNEX_Handler;
+osThreadId_t Thread_SUJI_Handler;
 
 void scw_thread_cli (void *arg);
-void scw_thread_annex (void *arg);
+void scw_thread_suji (void *arg);
 void scw_thread_init (void *arg);
 void scw_thread_sensor (void *arg);
 
@@ -53,7 +53,7 @@ void scw_thread_sensor (void *arg);
 #define CFG_INIT_THREAD_CB_SIZE     (0)
 #define CFG_INIT_THREAD_STACK_MEM   (0)
 #define CFG_INIT_THREAD_PRIORITY    osPriorityHigh
-#define CFG_INIT_THREAD_STACK_SIZE  (configMINIMAL_STACK_SIZE * 32)
+#define CFG_INIT_THREAD_STACK_SIZE  (configMINIMAL_STACK_SIZE * 4)
 
 const osThreadAttr_t SCW_INIT_Thread_attr = {
 		.name = 		CFG_INIT_THREAD_NAME,
@@ -110,28 +110,25 @@ const osThreadAttr_t SCW_SENSOR_Thread_Attr = {
 
 
 /******************************************************************************
- * Thread Annex attributes
+ * Thread Suji (PC board) attributes
  ******************************************************************************/
-#define CFG_ANNEXE_THREAD_NAME        "THREAD_ANNEX"
-#define CFG_ANNEXE_THREAD_ATTR_BITS   (0)
-#define CFG_ANNEXE_THREAD_CB_MEM      (0)
-#define CFG_ANNEXE_THREAD_CB_SIZE     (0)
-#define CFG_ANNEXE_THREAD_STACK_MEM   (0)
-#define CFG_ANNEXE_THREAD_PRIORITY    osPriorityNormal
-#define CFG_ANNEXE_THREAD_STACK_SIZE  (configMINIMAL_STACK_SIZE * 8)
+#define CFG_SUJI_THREAD_NAME        "THREAD_SUJI"
+#define CFG_SUJI_THREAD_ATTR_BITS   (0)
+#define CFG_SUJI_THREAD_CB_MEM      (0)
+#define CFG_SUJI_THREAD_CB_SIZE     (0)
+#define CFG_SUJI_THREAD_STACK_MEM   (0)
+#define CFG_SUJI_THREAD_PRIORITY    osPriorityNormal
+#define CFG_SUJI_THREAD_STACK_SIZE  (configMINIMAL_STACK_SIZE * 8)
 
-const osThreadAttr_t SCW_ANNEXE_Thread_Attr = {
-		.name = 		CFG_ANNEXE_THREAD_NAME,
-		.attr_bits = 	CFG_ANNEXE_THREAD_ATTR_BITS,
-		.cb_mem = 		CFG_ANNEXE_THREAD_CB_MEM,
-		.cb_size = 		CFG_ANNEXE_THREAD_CB_SIZE,
-		.stack_mem = 	CFG_ANNEXE_THREAD_STACK_MEM,
-		.stack_size = 	CFG_ANNEXE_THREAD_STACK_SIZE,
-		.priority = 	CFG_ANNEXE_THREAD_PRIORITY
+const osThreadAttr_t SCW_SUJI_Thread_Attr = {
+		.name = 		CFG_SUJI_THREAD_NAME,
+		.attr_bits = 	CFG_SUJI_THREAD_ATTR_BITS,
+		.cb_mem = 		CFG_SUJI_THREAD_CB_MEM,
+		.cb_size = 		CFG_SUJI_THREAD_CB_SIZE,
+		.stack_mem = 	CFG_SUJI_THREAD_STACK_MEM,
+		.stack_size = 	CFG_SUJI_THREAD_STACK_SIZE,
+		.priority = 	CFG_SUJI_THREAD_PRIORITY
 };
-
-
-void sc_thread_cli (void *arg);
 
 bool app_entry ()
 {
@@ -144,8 +141,8 @@ bool app_entry ()
 	Thread_SENSOR_Handler = osThreadNew(scw_thread_sensor, NULL, &SCW_SENSOR_Thread_Attr);
 	assert (Thread_SENSOR_Handler != NULL);
 
-//	Thread_ANNEX_Handler = osThreadNew(scw_thread_annex, NULL, &SC_ANNEXE_Thread_Attr);
-//	assert (Thread_ANNEX_Handler != NULL);
+	Thread_SUJI_Handler = osThreadNew(scw_thread_suji, NULL, &SCW_SUJI_Thread_Attr);
+	assert (Thread_SUJI_Handler != NULL);
 
 	return true;
 }

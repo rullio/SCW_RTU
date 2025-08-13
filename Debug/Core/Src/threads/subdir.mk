@@ -7,17 +7,20 @@
 C_SRCS += \
 ../Core/Src/threads/scw_thread_cli.c \
 ../Core/Src/threads/scw_thread_init.c \
-../Core/Src/threads/scw_thread_sensor.c 
+../Core/Src/threads/scw_thread_sensor.c \
+../Core/Src/threads/scw_thread_suji.c 
 
 OBJS += \
 ./Core/Src/threads/scw_thread_cli.o \
 ./Core/Src/threads/scw_thread_init.o \
-./Core/Src/threads/scw_thread_sensor.o 
+./Core/Src/threads/scw_thread_sensor.o \
+./Core/Src/threads/scw_thread_suji.o 
 
 C_DEPS += \
 ./Core/Src/threads/scw_thread_cli.d \
 ./Core/Src/threads/scw_thread_init.d \
-./Core/Src/threads/scw_thread_sensor.d 
+./Core/Src/threads/scw_thread_sensor.d \
+./Core/Src/threads/scw_thread_suji.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
@@ -27,7 +30,7 @@ Core/Src/threads/%.o Core/Src/threads/%.su Core/Src/threads/%.cyclo: ../Core/Src
 clean: clean-Core-2f-Src-2f-threads
 
 clean-Core-2f-Src-2f-threads:
-	-$(RM) ./Core/Src/threads/scw_thread_cli.cyclo ./Core/Src/threads/scw_thread_cli.d ./Core/Src/threads/scw_thread_cli.o ./Core/Src/threads/scw_thread_cli.su ./Core/Src/threads/scw_thread_init.cyclo ./Core/Src/threads/scw_thread_init.d ./Core/Src/threads/scw_thread_init.o ./Core/Src/threads/scw_thread_init.su ./Core/Src/threads/scw_thread_sensor.cyclo ./Core/Src/threads/scw_thread_sensor.d ./Core/Src/threads/scw_thread_sensor.o ./Core/Src/threads/scw_thread_sensor.su
+	-$(RM) ./Core/Src/threads/scw_thread_cli.cyclo ./Core/Src/threads/scw_thread_cli.d ./Core/Src/threads/scw_thread_cli.o ./Core/Src/threads/scw_thread_cli.su ./Core/Src/threads/scw_thread_init.cyclo ./Core/Src/threads/scw_thread_init.d ./Core/Src/threads/scw_thread_init.o ./Core/Src/threads/scw_thread_init.su ./Core/Src/threads/scw_thread_sensor.cyclo ./Core/Src/threads/scw_thread_sensor.d ./Core/Src/threads/scw_thread_sensor.o ./Core/Src/threads/scw_thread_sensor.su ./Core/Src/threads/scw_thread_suji.cyclo ./Core/Src/threads/scw_thread_suji.d ./Core/Src/threads/scw_thread_suji.o ./Core/Src/threads/scw_thread_suji.su
 
 .PHONY: clean-Core-2f-Src-2f-threads
 

@@ -175,6 +175,7 @@ void DebugMon_Handler(void)
 void RTC_IRQHandler(void)
 {
   /* USER CODE BEGIN RTC_IRQn 0 */
+	IntrObjEntryList[SCW_RTU_INTR_INDEX_RTC_IRQn].IntrCount++;
 
   /* USER CODE END RTC_IRQn 0 */
   HAL_RTCEx_RTCIRQHandler(&hrtc);
@@ -189,6 +190,7 @@ void RTC_IRQHandler(void)
 void DMA1_Channel1_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA1_Channel1_IRQn 0 */
+	IntrObjEntryList[SCW_RTU_INTR_INDEX_DMA1_Channel1_IRQn].IntrCount++;
 
   /* USER CODE END DMA1_Channel1_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_adc1);
@@ -203,6 +205,7 @@ void DMA1_Channel1_IRQHandler(void)
 void DMA1_Channel4_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA1_Channel4_IRQn 0 */
+	IntrObjEntryList[SCW_RTU_INTR_INDEX_DMA1_Channel4_IRQn].IntrCount++;
 
   /* USER CODE END DMA1_Channel4_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_usart1_tx);
@@ -217,6 +220,7 @@ void DMA1_Channel4_IRQHandler(void)
 void ADC1_2_IRQHandler(void)
 {
   /* USER CODE BEGIN ADC1_2_IRQn 0 */
+	IntrObjEntryList[SCW_RTU_INTR_INDEX_ADC1_2_IRQn].IntrCount++;
 
   /* USER CODE END ADC1_2_IRQn 0 */
   HAL_ADC_IRQHandler(&hadc1);
@@ -231,6 +235,7 @@ void ADC1_2_IRQHandler(void)
 void I2C1_EV_IRQHandler(void)
 {
   /* USER CODE BEGIN I2C1_EV_IRQn 0 */
+	IntrObjEntryList[SCW_RTU_INTR_INDEX_I2C1_EV_IRQn].IntrCount++;
 
   /* USER CODE END I2C1_EV_IRQn 0 */
   HAL_I2C_EV_IRQHandler(&hi2c1);
@@ -245,6 +250,7 @@ void I2C1_EV_IRQHandler(void)
 void I2C1_ER_IRQHandler(void)
 {
   /* USER CODE BEGIN I2C1_ER_IRQn 0 */
+	IntrObjEntryList[SCW_RTU_INTR_INDEX_I2C1_ER_IRQn].IntrCount++;
 
   /* USER CODE END I2C1_ER_IRQn 0 */
   HAL_I2C_ER_IRQHandler(&hi2c1);
@@ -259,6 +265,7 @@ void I2C1_ER_IRQHandler(void)
 void USART1_IRQHandler(void)
 {
   /* USER CODE BEGIN USART1_IRQn 0 */
+	IntrObjEntryList[SCW_RTU_INTR_INDEX_USART1_IRQn].IntrCount++;
 
   /* USER CODE END USART1_IRQn 0 */
   HAL_UART_IRQHandler(&huart1);
@@ -273,6 +280,7 @@ void USART1_IRQHandler(void)
 void RTC_Alarm_IRQHandler(void)
 {
   /* USER CODE BEGIN RTC_Alarm_IRQn 0 */
+	IntrObjEntryList[SCW_RTU_INTR_INDEX_RTC_Alarm_IRQn].IntrCount++;
 
   /* USER CODE END RTC_Alarm_IRQn 0 */
   HAL_RTC_AlarmIRQHandler(&hrtc);
@@ -287,6 +295,7 @@ void RTC_Alarm_IRQHandler(void)
 void TIM8_UP_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM8_UP_IRQn 0 */
+	IntrObjEntryList[SCW_RTU_INTR_INDEX_TIM8_UP_IRQn].IntrCount++;
 
   /* USER CODE END TIM8_UP_IRQn 0 */
   HAL_TIM_IRQHandler(&htim8);
@@ -301,6 +310,7 @@ void TIM8_UP_IRQHandler(void)
 void UART4_IRQHandler(void)
 {
   /* USER CODE BEGIN UART4_IRQn 0 */
+	IntrObjEntryList[SCW_RTU_INTR_INDEX_UART4_IRQn].IntrCount++;
 
   /* USER CODE END UART4_IRQn 0 */
   HAL_UART_IRQHandler(&huart4);
@@ -315,6 +325,7 @@ void UART4_IRQHandler(void)
 void UART5_IRQHandler(void)
 {
   /* USER CODE BEGIN UART5_IRQn 0 */
+	IntrObjEntryList[SCW_RTU_INTR_INDEX_UART5_IRQn].IntrCount++;
 
   /* USER CODE END UART5_IRQn 0 */
   HAL_UART_IRQHandler(&huart5);
@@ -329,6 +340,7 @@ void UART5_IRQHandler(void)
 void DMA2_Channel3_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA2_Channel3_IRQn 0 */
+	IntrObjEntryList[SCW_RTU_INTR_INDEX_DMA2_Channel3_IRQn].IntrCount++;
 
   /* USER CODE END DMA2_Channel3_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_uart4_rx);
@@ -343,6 +355,7 @@ void DMA2_Channel3_IRQHandler(void)
 void DMA2_Channel4_5_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA2_Channel4_5_IRQn 0 */
+	IntrObjEntryList[SCW_RTU_INTR_INDEX_DMA2_Channel4_5_IRQn].IntrCount++;
 
   /* USER CODE END DMA2_Channel4_5_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_uart4_tx);

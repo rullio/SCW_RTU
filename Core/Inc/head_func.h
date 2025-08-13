@@ -46,6 +46,8 @@
 
 
 
+void hexDump (SYS_CMD_DEVICE_NODE* pCmdIO, uint32_t nominal_addr, void *addr, uint32_t len);
+void HexDump (uint32_t nominal_addr, void *addr, uint32_t len);
 bool adc_initial_calibration(void);
 scw_door_status_t get_door_1_status();
 scw_door_status_t get_door_2_status();

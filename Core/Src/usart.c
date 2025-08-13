@@ -339,5 +339,25 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 }
 
 /* USER CODE BEGIN 1 */
+extern uint8_t 				SujiRxBuff[];
+void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
+{
+	if (huart->Instance == UART4) {	// Thread Suji 로 오는 packet 수신 (PC 보드에서 보냄)
+		suji_msg_t suji_msg;
+
+		suji_msg.head.type = SUJI_MSG_COMMAND;
+		suji_msg.head.dst = WORKM_SUJI;
+		suji_msg.head.src = WORKM_UART4;
+		suji_msg.head.len = Size;
+		memcpy (&suji_msg.body.Byte[0], &SujiRxBuff[0], Size);
+		osMessageQueuePut(sujiThreadQ, &suji_msg, 0U, 0U);
+
+		assert (HAL_UARTEx_ReceiveToIdle_DMA(huart, SujiRxBuff, SUJI_RX_BUFF_SIZE) == HAL_OK);
+		__HAL_DMA_DISABLE_IT(&hdma_uart4_rx, DMA_IT_HT);
+	}
+	else {
+		assert (0 == 1);
+	}
+}
 
 /* USER CODE END 1 */

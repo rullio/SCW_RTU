@@ -33,138 +33,81 @@
 
 #include "main.h"
 
-bool IntrList_init(IntrObjEntry_t IntrObjEntryList[])
-{
-	for (uint32_t i = SCW_RTU_INTR_INDEX_BEGIN ; i < SCW_RTU_INTR_INDEX_END ; i++) {
-		IntrObjEntryList[i].IntrNo = i;
-		IntrObjEntryList[i].IntrCount = 0;
-		strcpy (IntrObjEntryList[i].IntrName, "UNUSED INTERRUPT");
-		strcpy (IntrObjEntryList[i].IntrDesc, "UNUSED INTERRUPT");
-	}
 
-	strcpy (IntrObjEntryList[WWDG_IRQn].IntrName, "WWDG_IRQn");
-	strcpy (IntrObjEntryList[PVD_IRQn].IntrName, "PVD_IRQn");
-	strcpy (IntrObjEntryList[TAMPER_IRQn].IntrName, "TAMPER_IRQn");
-	strcpy (IntrObjEntryList[RTC_IRQn].IntrName, "RTC_IRQn");
-	strcpy (IntrObjEntryList[FLASH_IRQn].IntrName, "FLASH_IRQn");
-	strcpy (IntrObjEntryList[RCC_IRQn].IntrName, "RCC_IRQn");
-	strcpy (IntrObjEntryList[EXTI0_IRQn].IntrName, "EXTI0_IRQn");
-	strcpy (IntrObjEntryList[EXTI1_IRQn].IntrName, "EXTI1_IRQn");
-	strcpy (IntrObjEntryList[EXTI2_IRQn].IntrName, "EXTI2_IRQn");
-	strcpy (IntrObjEntryList[EXTI3_IRQn].IntrName, "EXTI3_IRQn");
-	strcpy (IntrObjEntryList[EXTI4_IRQn].IntrName, "EXTI4_IRQn");
-	strcpy (IntrObjEntryList[DMA1_Channel1_IRQn].IntrName, "DMA1_Channel1_IRQn");
-	strcpy (IntrObjEntryList[DMA1_Channel2_IRQn].IntrName, "DMA1_Channel2_IRQn");
-	strcpy (IntrObjEntryList[DMA1_Channel3_IRQn].IntrName, "DMA1_Channel3_IRQn");
-	strcpy (IntrObjEntryList[DMA1_Channel4_IRQn].IntrName, "DMA1_Channel4_IRQn");
-	strcpy (IntrObjEntryList[DMA1_Channel5_IRQn].IntrName, "DMA1_Channel5_IRQn");
-	strcpy (IntrObjEntryList[DMA1_Channel6_IRQn].IntrName, "DMA1_Channel6_IRQn");
-	strcpy (IntrObjEntryList[DMA1_Channel7_IRQn].IntrName, "DMA1_Channel7_IRQn");
-	strcpy (IntrObjEntryList[ADC1_2_IRQn].IntrName, "ADC1_2_IRQn");
-	strcpy (IntrObjEntryList[USB_HP_CAN1_TX_IRQn].IntrName, "USB_HP_CAN1_TX_IRQn");
-	strcpy (IntrObjEntryList[USB_LP_CAN1_RX0_IRQn].IntrName, "USB_LP_CAN1_RX0_IRQn");
-	strcpy (IntrObjEntryList[CAN1_RX1_IRQn].IntrName, "CAN1_RX1_IRQn");
-	strcpy (IntrObjEntryList[CAN1_SCE_IRQn].IntrName, "CAN1_SCE_IRQn");
-	strcpy (IntrObjEntryList[EXTI9_5_IRQn].IntrName, "EXTI9_5_IRQn");
-	strcpy (IntrObjEntryList[TIM1_BRK_IRQn].IntrName, "TIM1_BRK_IRQn");
-	strcpy (IntrObjEntryList[TIM1_UP_IRQn].IntrName, "TIM1_UP_IRQn");
-	strcpy (IntrObjEntryList[TIM1_TRG_COM_IRQn].IntrName, "TIM1_TRG_COM_IRQn");
-	strcpy (IntrObjEntryList[TIM1_CC_IRQn].IntrName, "TIM1_CC_IRQn");
-	strcpy (IntrObjEntryList[TIM2_IRQn].IntrName, "TIM2_IRQn");
-	strcpy (IntrObjEntryList[TIM3_IRQn].IntrName, "TIM3_IRQn");
-	strcpy (IntrObjEntryList[TIM4_IRQn].IntrName, "TIM4_IRQn");
-	strcpy (IntrObjEntryList[I2C1_EV_IRQn].IntrName, "I2C1_EV_IRQn");
-	strcpy (IntrObjEntryList[I2C1_ER_IRQn].IntrName, "I2C1_ER_IRQn");
-	strcpy (IntrObjEntryList[I2C2_EV_IRQn].IntrName, "I2C2_EV_IRQn");
-	strcpy (IntrObjEntryList[I2C2_ER_IRQn].IntrName, "I2C2_ER_IRQn");
-	strcpy (IntrObjEntryList[SPI1_IRQn].IntrName, "SPI1_IRQn");
-	strcpy (IntrObjEntryList[SPI2_IRQn].IntrName, "SPI2_IRQn");
-	strcpy (IntrObjEntryList[USART1_IRQn].IntrName, "USART1_IRQn");
-	strcpy (IntrObjEntryList[USART2_IRQn].IntrName, "USART2_IRQn");
-	strcpy (IntrObjEntryList[USART3_IRQn].IntrName, "USART3_IRQn");
-	strcpy (IntrObjEntryList[EXTI15_10_IRQn].IntrName, "EXTI15_10_IRQn");
-	strcpy (IntrObjEntryList[RTC_Alarm_IRQn].IntrName, "RTC_Alarm_IRQn");
-	strcpy (IntrObjEntryList[USBWakeUp_IRQn].IntrName, "USBWakeUp_IRQn");
-	strcpy (IntrObjEntryList[TIM8_BRK_IRQn].IntrName, "TIM8_BRK_IRQn");
-	strcpy (IntrObjEntryList[TIM8_UP_IRQn].IntrName, "TIM8_UP_IRQn");
-	strcpy (IntrObjEntryList[TIM8_TRG_COM_IRQn].IntrName, "TIM8_TRG_COM_IRQn");
-	strcpy (IntrObjEntryList[TIM8_CC_IRQn].IntrName, "TIM8_CC_IRQn");
-	strcpy (IntrObjEntryList[ADC3_IRQn].IntrName, "ADC3_IRQn");
-	strcpy (IntrObjEntryList[FSMC_IRQn].IntrName, "FSMC_IRQn");
-	strcpy (IntrObjEntryList[SDIO_IRQn].IntrName, "SDIO_IRQn");
-	strcpy (IntrObjEntryList[TIM5_IRQn].IntrName, "TIM5_IRQn");
-	strcpy (IntrObjEntryList[SPI3_IRQn].IntrName, "SPI3_IRQn");
-	strcpy (IntrObjEntryList[UART4_IRQn].IntrName, "UART4_IRQn");
-	strcpy (IntrObjEntryList[UART5_IRQn].IntrName, "UART5_IRQn");
-	strcpy (IntrObjEntryList[TIM6_IRQn].IntrName, "TIM6_IRQn");
-	strcpy (IntrObjEntryList[TIM7_IRQn].IntrName, "TIM7_IRQn");
-	strcpy (IntrObjEntryList[DMA2_Channel1_IRQn].IntrName, "DMA2_Channel1_IRQn");
-	strcpy (IntrObjEntryList[DMA2_Channel2_IRQn].IntrName, "DMA2_Channel2_IRQn");
-	strcpy (IntrObjEntryList[DMA2_Channel3_IRQn].IntrName, "DMA2_Channel3_IRQn");
-	strcpy (IntrObjEntryList[DMA2_Channel4_5_IRQn].IntrName, "DMA2_Channel4_5_IRQn");
-
-	strcpy (IntrObjEntryList[WWDG_IRQn].IntrDesc, "WWDG_IRQn");
-	strcpy (IntrObjEntryList[PVD_IRQn].IntrDesc, "PVD_IRQn");
-	strcpy (IntrObjEntryList[TAMPER_IRQn].IntrDesc, "TAMPER_IRQn");
-	strcpy (IntrObjEntryList[RTC_IRQn].IntrDesc, "RTC_IRQn");
-	strcpy (IntrObjEntryList[FLASH_IRQn].IntrDesc, "FLASH_IRQn");
-	strcpy (IntrObjEntryList[RCC_IRQn].IntrDesc, "RCC_IRQn");
-	strcpy (IntrObjEntryList[EXTI0_IRQn].IntrDesc, "EXTI0_IRQn");
-	strcpy (IntrObjEntryList[EXTI1_IRQn].IntrDesc, "EXTI1_IRQn");
-	strcpy (IntrObjEntryList[EXTI2_IRQn].IntrDesc, "EXTI2_IRQn");
-	strcpy (IntrObjEntryList[EXTI3_IRQn].IntrDesc, "EXTI3_IRQn");
-	strcpy (IntrObjEntryList[EXTI4_IRQn].IntrDesc, "EXTI4_IRQn");
-	strcpy (IntrObjEntryList[DMA1_Channel1_IRQn].IntrDesc, "DMA1_Channel1_IRQn");
-	strcpy (IntrObjEntryList[DMA1_Channel2_IRQn].IntrDesc, "DMA1_Channel2_IRQn");
-	strcpy (IntrObjEntryList[DMA1_Channel3_IRQn].IntrDesc, "DMA1_Channel3_IRQn");
-	strcpy (IntrObjEntryList[DMA1_Channel4_IRQn].IntrDesc, "DMA1_Channel4_IRQn");
-	strcpy (IntrObjEntryList[DMA1_Channel5_IRQn].IntrDesc, "DMA1_Channel5_IRQn");
-	strcpy (IntrObjEntryList[DMA1_Channel6_IRQn].IntrDesc, "DMA1_Channel6_IRQn");
-	strcpy (IntrObjEntryList[DMA1_Channel7_IRQn].IntrDesc, "DMA1_Channel7_IRQn");
-	strcpy (IntrObjEntryList[ADC1_2_IRQn].IntrDesc, "ADC1_2_IRQn");
-	strcpy (IntrObjEntryList[USB_HP_CAN1_TX_IRQn].IntrDesc, "USB_HP_CAN1_TX_IRQn");
-	strcpy (IntrObjEntryList[USB_LP_CAN1_RX0_IRQn].IntrDesc, "USB_LP_CAN1_RX0_IRQn");
-	strcpy (IntrObjEntryList[CAN1_RX1_IRQn].IntrDesc, "CAN1_RX1_IRQn");
-	strcpy (IntrObjEntryList[CAN1_SCE_IRQn].IntrDesc, "CAN1_SCE_IRQn");
-	strcpy (IntrObjEntryList[EXTI9_5_IRQn].IntrDesc, "EXTI9_5_IRQn");
-	strcpy (IntrObjEntryList[TIM1_BRK_IRQn].IntrDesc, "TIM1_BRK_IRQn");
-	strcpy (IntrObjEntryList[TIM1_UP_IRQn].IntrDesc, "TIM1_UP_IRQn");
-	strcpy (IntrObjEntryList[TIM1_TRG_COM_IRQn].IntrDesc, "TIM1_TRG_COM_IRQn");
-	strcpy (IntrObjEntryList[TIM1_CC_IRQn].IntrDesc, "TIM1_CC_IRQn");
-	strcpy (IntrObjEntryList[TIM2_IRQn].IntrDesc, "TIM2_IRQn");
-	strcpy (IntrObjEntryList[TIM3_IRQn].IntrDesc, "TIM3_IRQn");
-	strcpy (IntrObjEntryList[TIM4_IRQn].IntrDesc, "TIM4_IRQn");
-	strcpy (IntrObjEntryList[I2C1_EV_IRQn].IntrDesc, "I2C1_EV_IRQn");
-	strcpy (IntrObjEntryList[I2C1_ER_IRQn].IntrDesc, "I2C1_ER_IRQn");
-	strcpy (IntrObjEntryList[I2C2_EV_IRQn].IntrDesc, "I2C2_EV_IRQn");
-	strcpy (IntrObjEntryList[I2C2_ER_IRQn].IntrDesc, "I2C2_ER_IRQn");
-	strcpy (IntrObjEntryList[SPI1_IRQn].IntrDesc, "SPI1_IRQn");
-	strcpy (IntrObjEntryList[SPI2_IRQn].IntrDesc, "SPI2_IRQn");
-	strcpy (IntrObjEntryList[USART1_IRQn].IntrDesc, "USART1_IRQn");
-	strcpy (IntrObjEntryList[USART2_IRQn].IntrDesc, "USART2_IRQn");
-	strcpy (IntrObjEntryList[USART3_IRQn].IntrDesc, "USART3_IRQn");
-	strcpy (IntrObjEntryList[EXTI15_10_IRQn].IntrDesc, "EXTI15_10_IRQn");
-	strcpy (IntrObjEntryList[RTC_Alarm_IRQn].IntrDesc, "RTC_Alarm_IRQn");
-	strcpy (IntrObjEntryList[USBWakeUp_IRQn].IntrDesc, "USBWakeUp_IRQn");
-	strcpy (IntrObjEntryList[TIM8_BRK_IRQn].IntrDesc, "TIM8_BRK_IRQn");
-	strcpy (IntrObjEntryList[TIM8_UP_IRQn].IntrDesc, "TIM8_UP_IRQn");
-	strcpy (IntrObjEntryList[TIM8_TRG_COM_IRQn].IntrDesc, "TIM8_TRG_COM_IRQn");
-	strcpy (IntrObjEntryList[TIM8_CC_IRQn].IntrDesc, "TIM8_CC_IRQn");
-	strcpy (IntrObjEntryList[ADC3_IRQn].IntrDesc, "ADC3_IRQn");
-	strcpy (IntrObjEntryList[FSMC_IRQn].IntrDesc, "FSMC_IRQn");
-	strcpy (IntrObjEntryList[SDIO_IRQn].IntrDesc, "SDIO_IRQn");
-	strcpy (IntrObjEntryList[TIM5_IRQn].IntrDesc, "TIM5_IRQn");
-	strcpy (IntrObjEntryList[SPI3_IRQn].IntrDesc, "SPI3_IRQn");
-	strcpy (IntrObjEntryList[UART4_IRQn].IntrDesc, "UART4_IRQn");
-	strcpy (IntrObjEntryList[UART5_IRQn].IntrDesc, "UART5_IRQn");
-	strcpy (IntrObjEntryList[TIM6_IRQn].IntrDesc, "TIM6_IRQn");
-	strcpy (IntrObjEntryList[TIM7_IRQn].IntrDesc, "TIM7_IRQn");
-	strcpy (IntrObjEntryList[DMA2_Channel1_IRQn].IntrDesc, "DMA2_Channel1_IRQn");
-	strcpy (IntrObjEntryList[DMA2_Channel2_IRQn].IntrDesc, "DMA2_Channel2_IRQn");
-	strcpy (IntrObjEntryList[DMA2_Channel3_IRQn].IntrDesc, "DMA2_Channel3_IRQn");
-	strcpy (IntrObjEntryList[DMA2_Channel4_5_IRQn].IntrDesc, "DMA2_Channel4_5_IRQn");
+#if 0
+typedef struct {
+	uint32_t			IntrNo;
+	uint32_t			IntrCount;
+	char				IntrName[50];
+	char				IntrDesc[50];
+} IntrObjEntry_t;
 
 
-
-	return true;
-}
+#endif
+IntrObjEntry_t	IntrObjEntryList[SCW_RTU_INTR_INDEX_END] = {
+		{true,		0,			"WWDG_IRQn",				"WWDG_IRQn"},
+//		{false,		0,			"PVD_IRQn",					"PVD_IRQn"},
+//		{false,		0,			"TAMPER_IRQn",				"TAMPER_IRQn"},
+		{true,		0,			"RTC_IRQn",					"RTC_IRQn"},
+//		{false,		0,			"FLASH_IRQn",				"FLASH_IRQn"},
+//		{false,		0,			"RCC_IRQn",					"RCC_IRQn"},
+//		{false,		0,			"EXTI0_IRQn",				"EXTI0_IRQn"},
+//		{false,		0,			"EXTI1_IRQn",				"EXTI1_IRQn"},
+//		{false,		0,			"EXTI2_IRQn",				"EXTI2_IRQn"},
+//		{false,		0,			"EXTI3_IRQn",				"EXTI3_IRQn"},
+//
+//		{false,		0,			"EXTI4_IRQn",				"EXTI4_IRQn"},
+		{true,		0,			"DMA1_Channel1_IRQn",		"ADC1 Intr"},
+//		{false,		0,			"DMA1_Channel2_IRQn",		"DMA1_Channel2_IRQn"},
+//		{false,		0,			"DMA1_Channel3_IRQn",		"DMA1_Channel3_IRQn"},
+		{true,		0,			"DMA1_Channel4_IRQn",		"Console Rx DMA"},
+//		{false,		0,			"DMA1_Channel5_IRQn",		"DMA1_Channel5_IRQn"},
+//		{false,		0,			"DMA1_Channel6_IRQn",		"DMA1_Channel6_IRQn"},
+//		{false,		0,			"DMA1_Channel7_IRQn",		"DMA1_Channel7_IRQn"},
+		{true,		0,			"ADC1_2_IRQn",				"ADC1_2_IRQn"},
+//		{false,		0,			"USB_HP_CAN1_TX_IRQn",		"USB_HP_CAN1_TX_IRQn"},
+//		{false,		0,			"USB_LP_CAN1_RX0_IRQn",		"USB_LP_CAN1_RX0_IRQn"},
+//
+//		{false,		0,			"CAN1_RX1_IRQn",			"CAN1_RX1_IRQn"},
+//		{false,		0,			"CAN1_SCE_IRQn",			"CAN1_SCE_IRQn"},
+//		{false,		0,			"EXTI9_5_IRQn",				"EXTI9_5_IRQn"},
+//		{false,		0,			"TIM1_BRK_IRQn",			"TIM1_BRK_IRQn"},
+//		{false,		0,			"TIM1_UP_IRQn",				"TIM1_UP_IRQn"},
+//		{false,		0,			"TIM1_TRG_COM_IRQn",		"TIM1_TRG_COM_IRQn"},
+//		{false,		0,			"TIM1_CC_IRQn",				"TIM1_CC_IRQn"},
+//		{false,		0,			"TIM2_IRQn",				"TIM2_IRQn"},
+//		{false,		0,			"TIM3_IRQn",				"TIM3_IRQn"},
+//
+//		{false,		0,			"TIM4_IRQn",				"TIM4_IRQn"},
+		{true,		0,			"I2C1_EV_IRQn",				"I2C1_EV_IRQn"},
+		{true,		0,			"I2C1_ER_IRQn",				"I2C1_ER_IRQn"},
+//		{false,		0,			"I2C2_EV_IRQn",				"I2C2_EV_IRQn"},
+//		{false,		0,			"I2C2_ER_IRQn",				"I2C2_ER_IRQn"},
+//		{false,		0,			"SPI1_IRQn",				"SPI1_IRQn"},
+//		{false,		0,			"SPI2_IRQn",				"SPI2_IRQn"},
+		{true,		0,			"USART1_IRQn",				"Console Intr"},
+//		{false,		0,			"USART2_IRQn",				"USART2_IRQn"},
+//		{false,		0,			"USART3_IRQn",				"USART3_IRQn"},
+//
+//		{false,		0,			"EXTI15_10_IRQn",			"EXTI15_10_IRQn"},
+		{true,		0,			"RTC_Alarm_IRQn",			"RTC_Alarm_IRQn"},
+//		{false,		0,			"USBWakeUp_IRQn",			"USBWakeUp_IRQn"},
+//		{false,		0,			"TIM8_BRK_IRQn",			"TIM8_BRK_IRQn"},
+		{true,		0,			"TIM8_UP_IRQn",				"Timebase"},
+//		{false,		0,			"TIM8_TRG_COM_IRQn",		"TIM8_TRG_COM_IRQn"},
+//		{false,		0,			"TIM8_CC_IRQn",				"TIM8_CC_IRQn"},
+//		{false,		0,			"ADC3_IRQn",				"ADC3_IRQn"},
+//		{false,		0,			"FSMC_IRQn",				"FSMC_IRQn"},
+//		{false,		0,			"SDIO_IRQn",				"SDIO_IRQn"},
+//
+//		{false,		0,			"TIM5_IRQn",				"TIM5_IRQn"},
+//		{false,		0,			"SPI3_IRQn",				"SPI3_IRQn"},
+		{true,		0,			"UART4_IRQn",				"Suji Intr"},
+		{true,		0,			"UART5_IRQn",				"UART5_IRQn"},
+//		{false,		0,			"TIM6_IRQn",				"TIM6_IRQn"},
+//		{false,		0,			"TIM7_IRQn",				"TIM7_IRQn"},
+//		{false,		0,			"DMA2_Channel1_IRQn",		"DMA2_Channel1_IRQn"},
+//		{false,		0,			"DMA2_Channel2_IRQn",		"DMA2_Channel2_IRQn"},
+		{true,		0,			"DMA2_Channel3_IRQn",		"Suji -> RTU"},
+		{true,		0,			"DMA2_Channel4_5_IRQn",		"RTU -> Suji"},
+};

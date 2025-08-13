@@ -25,7 +25,7 @@ extern UART_HandleTypeDef huart1;
  * max buffer Size to queue data traces and max data trace allowed.
  * Only Used if DBG_TRACE_USE_CIRCULAR_QUEUE is defined
  */
-#define DBG_TRACE_MSG_QUEUE_SIZE	8192		// Teraterm 의 화면 가득 display 하다가 깨지는 것을 방지하려면 Queue buffer 가 8K 정도는 되야 한다.
+#define DBG_TRACE_MSG_QUEUE_SIZE	1024		// 이 수치가 작으면 scw 명령에서 화면이 더 자주 깨진다.
 
 /* Private variables ---------------------------------------------------------*/
 /** @defgroup TRACE Log private variables
@@ -33,8 +33,8 @@ extern UART_HandleTypeDef huart1;
  */
 #if (( CFG_DEBUG_TRACE_FULL != 0 ) || ( CFG_DEBUG_TRACE_LIGHT != 0 ))
 #if (DBG_TRACE_USE_CIRCULAR_QUEUE != 0)
-PLACE_IN_SECTION ("mram") static queue_t MsgDbgTraceQueue;
-PLACE_IN_SECTION ("mram") static uint8_t MsgDbgTraceQueueBuff[DBG_TRACE_MSG_QUEUE_SIZE];
+static queue_t MsgDbgTraceQueue;
+static uint8_t MsgDbgTraceQueueBuff[DBG_TRACE_MSG_QUEUE_SIZE];
 #endif
 __IO ITStatus DbgTracePeripheralReady = SET;
 #endif

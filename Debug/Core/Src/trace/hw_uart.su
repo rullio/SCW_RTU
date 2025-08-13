@@ -1,0 +1,4 @@
+../Core/Src/trace/hw_uart.c:52:6:HW_UART_Receive_IT	24	static
+../Core/Src/trace/hw_uart.c:67:13:HW_UART_Transmit_DMA	32	static
+../Core/Src/trace/hw_uart.c:106:6:HAL_UART_RxCpltCallback	16	static
+../Core/Src/trace/hw_uart.c:124:6:HAL_UART_TxCpltCallback	16	static

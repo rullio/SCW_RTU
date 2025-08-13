@@ -126,7 +126,8 @@ static bool sensor_msg_handler_info_display(sensor_msg_t *pq_msg)
 	UNUSED(pq_msg);
 	if (do_scw_info_display == true) {
 		printf (RTT_COLOR_CODE_CYAN);
-		printf (CUI_ESC_CUR_HOME); osDelay(1);
+		printf (CUI_ESC_CLR);
+		printf (CUI_ESC_CUR_HOME);
 		printf ("***************************************************"LINE_TERM);
 		printf ("*                                                 *"LINE_TERM);
 		printf ("*             Smart Crosswalk Status              *"LINE_TERM);
