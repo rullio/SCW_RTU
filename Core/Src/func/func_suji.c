@@ -34,156 +34,203 @@
 #include "main.h"
 
 extern suji_msg_func			suji_msg_handler_tbl[];
-extern uint8_t 					SujiTxBuff[];
+extern osSemaphoreId_t			suji_sem;
 
-//
-//
-//static bool send_to_pc (uint8_t *buf, uint16_t size)
-//{
-//
-//	HAL_UART_Transmit_DMA(&huart4, buf, size);
-//	return true;
-//}
+#define	GET_SUJI_SEM			osSemaphoreAcquire(suji_sem, 0);
+#define	PUT_SUJI_SEM			osSemaphoreRelease(suji_sem);
+
+bool msg_send_to_managerPC(uint8_t buff[])
+{
+	static uint8_t SujiTxBuff[SUJI_TX_BUFF_SIZE];
+
+	memcpy(SujiTxBuff, buff, SUJI_TX_BUFF_SIZE);
+
+	GET_SUJI_SEM;
+	HAL_UART_Transmit_DMA(&huart4, &SujiTxBuff[0], SUJI_TX_BUFF_SIZE);
+	PUT_SUJI_SEM;
+
+	return true;
+}
 
 static void send_rtu_version(suji_msg_body_t *pbody)
 {
-	uint8_t len = sizeof(FW_VERSION) + 2;
-	memset (&SujiTxBuff[0], 0, SUJI_TX_BUFF_SIZE);
-	SujiTxBuff[0] = STX;
-	SujiTxBuff[1] = STX;
-	SujiTxBuff[2] = 0;
-	SujiTxBuff[3] = 0;
-	SujiTxBuff[4] = 0;
-	SujiTxBuff[5] = len;
-	SujiTxBuff[6] = OPCODE_RTU_VERSION;
-	SujiTxBuff[7] = 0x01;
-	memcpy(&SujiTxBuff[8], FW_VERSION, sizeof(FW_VERSION));
-	SujiTxBuff[len+6] = ETX;
+	uint8_t rtu_version_buff[SUJI_TX_BUFF_SIZE];
+	memset (&rtu_version_buff[0], 0, SUJI_TX_BUFF_SIZE);
+	printf("%s() Got OPCODE_RTU_VERSION"LINE_TERM, __FUNCTION__);
 
-	HAL_UART_Transmit_DMA(&huart4, &SujiTxBuff[0], len + 6 + 1);		// sizeof() 로 string 의 길이를 잴 때 마지막 NULL 문자 포함한 길이 return 하기 때문에 1 을 추가한다.
+	rtu_version_buff[0] = STX;
+	rtu_version_buff[1] = STX;
+	rtu_version_buff[2] = 0;
+	rtu_version_buff[3] = 0;
+	rtu_version_buff[4] = 0;
+	rtu_version_buff[5] = sizeof(FW_VERSION) + 2;
+	rtu_version_buff[6] = OPCODE_RTU_VERSION;
+	rtu_version_buff[7] = 0x01;
+	memcpy(&rtu_version_buff[8], FW_VERSION, sizeof(FW_VERSION));
+	rtu_version_buff[46] = ETX;
+	rtu_version_buff[47] = ETX;
+
+	msg_send_to_managerPC(rtu_version_buff);
+	printf("Current fw version = %s() "LINE_TERM, FW_VERSION);
 }
 
-static void send_rtu_temperature(suji_msg_body_t *pbody, float temperature)
+static void send_rtu_temperature(suji_msg_body_t *pbody)
 {
-//	printf("%s() Got OPCODE_TEMPERATURE"LINE_TERM, __FUNCTION__);
+	int32_t temp_integer;
+	uint8_t temperature_buff[SUJI_TX_BUFF_SIZE];
+	memset (&temperature_buff[0], 0, SUJI_TX_BUFF_SIZE);
+	//	printf("%s() Got OPCODE_TEMPERATURE"LINE_TERM, __FUNCTION__);
 
-	memset (&SujiTxBuff[0], 0, SUJI_TX_BUFF_SIZE);
-	SujiTxBuff[0] = STX;
-	SujiTxBuff[1] = STX;
-	SujiTxBuff[2] = 0;
-	SujiTxBuff[3] = 0;
-	SujiTxBuff[4] = 0;
-	SujiTxBuff[5] = 6;
-	SujiTxBuff[6] = OPCODE_TEMPERATURE;
-	SujiTxBuff[7] = 0x01;
-	memcpy(&SujiTxBuff[8], &temperature, sizeof(float));
-	SujiTxBuff[12] = ETX;
+	temperature_buff[0] = STX;
+	temperature_buff[1] = STX;
+	temperature_buff[2] = 0;
+	temperature_buff[3] = 0;
+	temperature_buff[4] = 0;
+	temperature_buff[5] = 6;
+	temperature_buff[6] = OPCODE_TEMPERATURE;
+	temperature_buff[7] = 0x01;
+	temp_integer = SHT2x_GetInteger(scw_infoObj.SHT20_INFO.m_tempreture);
+	memcpy(&temperature_buff[8], &temp_integer, sizeof(int32_t));
+	temperature_buff[46] = ETX;
+	temperature_buff[47] = ETX;
 
-	HAL_UART_Transmit_DMA(&huart4, &SujiTxBuff[0], 13);
+	msg_send_to_managerPC(temperature_buff);
+	printf("Current ondo = %ld "LINE_TERM, temp_integer);
 }
 
-static void send_rtu_humidity(suji_msg_body_t *pbody, float humidity)
+static void send_rtu_humidity(suji_msg_body_t *pbody)
 {
-//	printf("%s() Got OPCODE_HUMIDITY"LINE_TERM, __FUNCTION__);
+	int32_t humidity_integer;
+	uint8_t humidity_buff[SUJI_TX_BUFF_SIZE];
+	memset (&humidity_buff[0], 0, SUJI_TX_BUFF_SIZE);
+	//	printf("%s() Got OPCODE_HUMIDITY"LINE_TERM, __FUNCTION__);
 
-	memset (&SujiTxBuff[0], 0, SUJI_TX_BUFF_SIZE);
-	SujiTxBuff[0] = STX;
-	SujiTxBuff[1] = STX;
-	SujiTxBuff[2] = 0;
-	SujiTxBuff[3] = 0;
-	SujiTxBuff[4] = 0;
-	SujiTxBuff[5] = 6;
-	SujiTxBuff[6] = OPCODE_HUMIDITY;
-	SujiTxBuff[7] = 0x01;
-	memcpy(&SujiTxBuff[8], &humidity, sizeof(float));
-	SujiTxBuff[12] = ETX;
+	memset (&humidity_buff[0], 0, SUJI_TX_BUFF_SIZE);
+	humidity_buff[0] = STX;
+	humidity_buff[1] = STX;
+	humidity_buff[2] = 0;
+	humidity_buff[3] = 0;
+	humidity_buff[4] = 0;
+	humidity_buff[5] = 6;
+	humidity_buff[6] = OPCODE_HUMIDITY;
+	humidity_buff[7] = 0x01;
+	humidity_integer = SHT2x_GetInteger(scw_infoObj.SHT20_INFO.m_humidity);
+	memcpy(&humidity_buff[8], &humidity_integer, sizeof(int32_t));
+	humidity_buff[46] = ETX;
+	humidity_buff[47] = ETX;
 
-	HAL_UART_Transmit_DMA(&huart4, &SujiTxBuff[0], 13);
+	msg_send_to_managerPC(humidity_buff);
+	printf("Current seupdo = %ld "LINE_TERM, humidity_integer);
 }
 
 static void send_rtu_watchdog_use(suji_msg_body_t *pbody)
 {
-//	printf("%s() Got OPCODE_WATCHDOG_USE"LINE_TERM, __FUNCTION__);
-	memset (&SujiTxBuff[0], 0, SUJI_TX_BUFF_SIZE);
-	memcpy (&SujiTxBuff[0], pbody, SUJI_TX_BUFF_SIZE);
-	HAL_UART_Transmit_DMA(&huart4, &SujiTxBuff[0], 10);
+	//	printf("%s() Got OPCODE_WATCHDOG_USE"LINE_TERM, __FUNCTION__);
+
+	uint8_t watchdog_use_buff[SUJI_TX_BUFF_SIZE];
+	memcpy (watchdog_use_buff, pbody->Byte, SUJI_TX_BUFF_SIZE);
+	msg_send_to_managerPC(watchdog_use_buff);
+
+
+
+	if (watchdog_use_buff[8] == 1) printf("WATCHDOG USE"LINE_TERM);
+	else if (watchdog_use_buff[8] == 0) printf("WATCHDOG NOT USE"LINE_TERM);
+	else printf("UNDEFINED WATCHDOG USE command"LINE_TERM);
 }
 
 static void send_rtu_watchdog_set(suji_msg_body_t *pbody)
 {
-//	printf("%s() Got OPCODE_WATCHDOG_SET"LINE_TERM, __FUNCTION__);
-	memset (&SujiTxBuff[0], 0, SUJI_TX_BUFF_SIZE);
-	memcpy (&SujiTxBuff[0], pbody, SUJI_TX_BUFF_SIZE);
-	HAL_UART_Transmit_DMA(&huart4, &SujiTxBuff[0], 10);
+	//	printf("%s() Got OPCODE_WATCHDOG_SET"LINE_TERM, __FUNCTION__);
+	uint8_t watchdog_set_buff[SUJI_TX_BUFF_SIZE];
+	memcpy (watchdog_set_buff, pbody->Byte, SUJI_TX_BUFF_SIZE);
+	msg_send_to_managerPC(watchdog_set_buff);
+	printf("WATCHDOG value = %d"LINE_TERM, watchdog_set_buff[8]);
 }
 
-static void send_rtu_fan_temp_set(suji_msg_body_t *pbody)
+static void send_rtu_temp_band_set(suji_msg_body_t *pbody)
 {
-//	printf("%s() Got OPCODE_FAN_TEMP_SET"LINE_TERM, __FUNCTION__);
-	memset (&SujiTxBuff[0], 0, SUJI_TX_BUFF_SIZE);
-	memcpy (&SujiTxBuff[0], pbody, SUJI_TX_BUFF_SIZE);
-	HAL_UART_Transmit_DMA(&huart4, &SujiTxBuff[0], 10);
+	//	printf("%s() Got OPCODE_FAN_TEMP_SET"LINE_TERM, __FUNCTION__);
+	uint8_t fan_temp_set_buff[SUJI_TX_BUFF_SIZE];
+	memcpy (fan_temp_set_buff, pbody->Byte, SUJI_TX_BUFF_SIZE);
+	msg_send_to_managerPC(fan_temp_set_buff);
+
+	scw_infoObj.temp_band_high = *(int32_t *)&fan_temp_set_buff[8];
+	scw_infoObj.temp_band_middle = *(int32_t *)&fan_temp_set_buff[12];
+	scw_infoObj.temp_band_low = *(int32_t*)&fan_temp_set_buff[16];
+
+	printf("temp_band_high = %ld"LINE_TERM, scw_infoObj.temp_band_high);
+	printf("temp_band_middle = %ld"LINE_TERM, scw_infoObj.temp_band_middle);
+	printf("temp_band_low = %ld"LINE_TERM, scw_infoObj.temp_band_low);
 }
 
-static void send_rtu_heater_temp_set(suji_msg_body_t *pbody)
-{
-//	printf("%s() Got OPCODE_HEATER_TEMP_SET"LINE_TERM, __FUNCTION__);
-	memset (&SujiTxBuff[0], 0, SUJI_TX_BUFF_SIZE);
-	memcpy (&SujiTxBuff[0], pbody, SUJI_TX_BUFF_SIZE);
-	HAL_UART_Transmit_DMA(&huart4, &SujiTxBuff[0], 10);
-}
-
-static void send_rtu_adv_panel_lamp_set(suji_msg_body_t *pbody)
-{
-//	printf("%s() Got OPCODE_ADV_PANEL_LAMP_SET"LINE_TERM, __FUNCTION__);
-	memset (&SujiTxBuff[0], 0, SUJI_TX_BUFF_SIZE);
-	memcpy (&SujiTxBuff[0], pbody, SUJI_TX_BUFF_SIZE);
-	HAL_UART_Transmit_DMA(&huart4, &SujiTxBuff[0], 10);
-}
-
-static void send_rtu_xavier_control(suji_msg_body_t *pbody)
-{
-//	printf("%s() Got OPCODE_XAVIER_CONTROL"LINE_TERM, __FUNCTION__);
-	memset (&SujiTxBuff[0], 0, SUJI_TX_BUFF_SIZE);
-	memcpy (&SujiTxBuff[0], pbody, SUJI_TX_BUFF_SIZE);
-	HAL_UART_Transmit_DMA(&huart4, &SujiTxBuff[0], 10);
-}
-
-static void send_rtu_lamp_post_control(suji_msg_body_t *pbody)
-{
-//	printf("%s() Got OPCODE_LAMP_POST_CONTROL"LINE_TERM, __FUNCTION__);
-	memset (&SujiTxBuff[0], 0, SUJI_TX_BUFF_SIZE);
-	memcpy (&SujiTxBuff[0], pbody, SUJI_TX_BUFF_SIZE);
-	HAL_UART_Transmit_DMA(&huart4, &SujiTxBuff[0], 10);
-}
+//
+//static void send_rtu_adv_panel_lamp_set(suji_msg_body_t *pbody)
+//{
+//	//	printf("%s() Got OPCODE_ADV_PANEL_LAMP_SET"LINE_TERM, __FUNCTION__);
+//	uint8_t rtu_adv_panel_lamp_buff[SUJI_TX_BUFF_SIZE];
+//	memcpy (rtu_adv_panel_lamp_buff, pbody->Byte, SUJI_TX_BUFF_SIZE);
+//	msg_send_to_managerPC(rtu_adv_panel_lamp_buff);
+//}
+//
+//static void send_rtu_xavier_control(suji_msg_body_t *pbody)
+//{
+//	//	printf("%s() Got OPCODE_XAVIER_CONTROL"LINE_TERM, __FUNCTION__);
+//	uint8_t xavier_control_buff[SUJI_TX_BUFF_SIZE];
+//	memcpy (xavier_control_buff, pbody->Byte, SUJI_TX_BUFF_SIZE);
+//	msg_send_to_managerPC(xavier_control_buff);
+//}
+//
+//static void send_rtu_lamp_post_control(suji_msg_body_t *pbody)
+//{
+//	//	printf("%s() Got OPCODE_LAMP_POST_CONTROL"LINE_TERM, __FUNCTION__);
+//	uint8_t rtu_lamp_post_control_buff[SUJI_TX_BUFF_SIZE];
+//	memcpy (rtu_lamp_post_control_buff, pbody->Byte, SUJI_TX_BUFF_SIZE);
+//	msg_send_to_managerPC(rtu_lamp_post_control_buff);
+//}
 
 static void send_rtu_status_info(suji_msg_body_t *pbody)
 {
-	memset (&SujiTxBuff[0], 0, SUJI_TX_BUFF_SIZE);
-	SujiTxBuff[0] = STX;
-	SujiTxBuff[1] = STX;
-	SujiTxBuff[2] = 0;
-	SujiTxBuff[3] = 0;
-	SujiTxBuff[4] = 0;
-	SujiTxBuff[5] = 0x2D;
-	SujiTxBuff[6] = OPCODE_STATUS_INFO;
-	SujiTxBuff[7] = 0x01;
+	printf("%s() Got OPCODE_STATUS_INFO"LINE_TERM, __FUNCTION__);
+	uint8_t rtu_status_info_buff[SUJI_TX_BUFF_SIZE];
+	memset (&rtu_status_info_buff[0], 0, SUJI_TX_BUFF_SIZE);
+	rtu_status_info_buff[0] = STX;
+	rtu_status_info_buff[1] = STX;
+	rtu_status_info_buff[2] = 0;
+	rtu_status_info_buff[3] = 0;
+	rtu_status_info_buff[4] = 0;
+	rtu_status_info_buff[5] = 0x2D;
+	rtu_status_info_buff[6] = OPCODE_STATUS_INFO;
+	rtu_status_info_buff[7] = 0x01;
 
-	SujiTxBuff[8] = 0x01;		// watchdog 사용 상태
-	SujiTxBuff[9] = 0x01;		// watchdog 값
-	SujiTxBuff[10] = 0x01;		// door_1
-	SujiTxBuff[11] = 0x01;		// door_2
-	SujiTxBuff[12] = 0x01;		// fan 동작 상태
-	SujiTxBuff[13] = 0x46;		// fan 온도 max
-	SujiTxBuff[14] = 0x0;		// fan 온도 min
-	SujiTxBuff[15] = 0x01;		// heater 동작 상태
-	SujiTxBuff[16] = 0x46;		// heater 온도 max
-	SujiTxBuff[17] = 0x00;		// heater 온도 min
-	SujiTxBuff[18] = 0x20;		// 현재 온도 (float 4Byte)
-	SujiTxBuff[22] = 0x40;		// 현재 습도 (float 4Byte)
+	rtu_status_info_buff[8] = scw_infoObj.watchdog_use;					// watchdog 사용 상태
+	rtu_status_info_buff[9] = scw_infoObj.watchdog_value;				// watchdog 값
+	rtu_status_info_buff[10] = scw_infoObj.scw_door.door_1_status;		// door_1
+	rtu_status_info_buff[11] = scw_infoObj.scw_door.door_2_status;		// door_2
+	rtu_status_info_buff[12] = scw_infoObj.scw_fan_status;				// fan 동작 상태
+	rtu_status_info_buff[13] = scw_infoObj.scw_heater_status;			// fan start 온도
+	rtu_status_info_buff[14] = scw_infoObj.temp_band_high;				// system temperature band high
+	rtu_status_info_buff[18] = scw_infoObj.temp_band_middle;			// system temperature band middle
+	rtu_status_info_buff[22] = scw_infoObj.temp_band_low;				// system temperature band low
 
-	SujiTxBuff[51] = ETX;
-	HAL_UART_Transmit_DMA(&huart4, &SujiTxBuff[0], 52);
+	int32_t temp_integer = SHT2x_GetInteger(scw_infoObj.SHT20_INFO.m_tempreture);
+	memcpy(&rtu_status_info_buff[26], &temp_integer, sizeof(int32_t));
+
+	int32_t humidity_integer = SHT2x_GetInteger(scw_infoObj.SHT20_INFO.m_humidity);
+	memcpy(&rtu_status_info_buff[30], &humidity_integer, sizeof(int32_t));
+
+	rtu_status_info_buff[46] = ETX;
+	rtu_status_info_buff[47] = ETX;
+	msg_send_to_managerPC(rtu_status_info_buff);
+
+	printf("watchdog use = %s"LINE_TERM, (scw_infoObj.watchdog_use == 1)?"USE":"NOT USE");
+	printf("watchdog value = %d"LINE_TERM, scw_infoObj.watchdog_value);
+	printf("door_1 = %s"LINE_TERM, (scw_infoObj.scw_door.door_1_status == SCW_DOOR_OPEN)?"SCW_DOOR_OPEN":"SCW_DOOR_CLOSED");
+	printf("door_2 = %s"LINE_TERM, (scw_infoObj.scw_door.door_2_status == SCW_DOOR_OPEN)?"SCW_DOOR_OPEN":"SCW_DOOR_CLOSED");
+	printf("fan = %s"LINE_TERM, (scw_infoObj.scw_fan_status == SCW_FAN_STATE_WORKING)?"SCW_FAN_STATE_WORKING":"SCW_FAN_STATE_STOP");
+	printf("heater = %s"LINE_TERM, (scw_infoObj.scw_heater_status == SCW_HEATER_STATE_WORKING)?"SCW_HEATER_STATE_WORKING":"SCW_HEATER_STATE_STOP");
+	printf("temp_band_high = %ld"LINE_TERM, scw_infoObj.temp_band_high);
+	printf("temp_band_middle = %ld"LINE_TERM, scw_infoObj.temp_band_middle);
+	printf("temp_band_low = %ld"LINE_TERM, scw_infoObj.temp_band_low);
 }
 
 static bool suji_msg_handler_default(suji_msg_t *pmsg)
@@ -205,74 +252,79 @@ static bool suji_command_integrity_check(suji_msg_body_t *pbody)
 {
 	if (pbody->Byte[0] != STX) return false;
 	if (pbody->Byte[1] != STX) return false;
+	if (pbody->Byte[46] != ETX) return false;
+	if (pbody->Byte[47] != ETX) return false;
 	else return true;
 }
 
 void doSystemReset();
+extern osSemaphoreId_t			suji_sem;
+
 static bool suji_msg_handler_command(suji_msg_t *pmsg)
 {
+	suji_command_opcode_type_t suji_command_opcode;
+
 	if (suji_command_integrity_check(&pmsg->body) != true) {
 		printf("%s() Incorrect command"LINE_TERM, __FUNCTION__);
 		HexDump(0, &pmsg->body.Byte[0], pmsg->head.len);
+		return true;
 	}
 
-	suji_command_opcode_type_t suji_command_opcode = pmsg->body.Byte[6];
-	switch (suji_command_opcode) {
-	case OPCODE_POWER_RESET :
-		printf(CUI_ESC_CLR);
-		printf(CUI_ESC_CUR_HOME);
-		printf(LINE_TERM"====== MANUAL SYSTEM RESET ======="LINE_TERM);
-		HAL_Delay(4);
-		doSystemReset();
-		break;
+	else {
+		suji_command_opcode = pmsg->body.Byte[6];
+		switch (suji_command_opcode) {
+		case OPCODE_POWER_RESET :
+			printf(CUI_ESC_CLR);
+			printf(CUI_ESC_CUR_HOME);
+			printf(LINE_TERM"====== MANUAL SYSTEM RESET ======="LINE_TERM);
+			HAL_Delay(4);
+			doSystemReset();
+			break;
 
-	case OPCODE_RTU_VERSION :
-		send_rtu_version((suji_msg_body_t *)&pmsg->body);
-		break;
+		case OPCODE_RTU_VERSION :
+			send_rtu_version((suji_msg_body_t *)&pmsg->body);
+			break;
 
-	case OPCODE_TEMPERATURE :
-		send_rtu_temperature((suji_msg_body_t *)&pmsg->body, 0.0);
-		break;
+		case OPCODE_TEMPERATURE :
+			send_rtu_temperature((suji_msg_body_t *)&pmsg->body);
+			break;
 
-	case OPCODE_HUMIDITY :
-		send_rtu_humidity((suji_msg_body_t *)&pmsg->body, 0.0);
-		break;
+		case OPCODE_HUMIDITY :
+			send_rtu_humidity((suji_msg_body_t *)&pmsg->body);
+			break;
 
-	case OPCODE_WATCHDOG_USE :
-		send_rtu_watchdog_use((suji_msg_body_t *)&pmsg->body);
-		break;
+		case OPCODE_WATCHDOG_USE :
+			send_rtu_watchdog_use((suji_msg_body_t *)&pmsg->body);
+			break;
 
-	case OPCODE_WATCHDOG_SET :
-		send_rtu_watchdog_set((suji_msg_body_t *)&pmsg->body);
-		break;
+		case OPCODE_WATCHDOG_SET :
+			send_rtu_watchdog_set((suji_msg_body_t *)&pmsg->body);
+			break;
 
-	case OPCODE_FAN_TEMP_SET :
-		send_rtu_fan_temp_set((suji_msg_body_t *)&pmsg->body);
-		break;
+		case OPCODE_TEMP_BAND_SET :
+			send_rtu_temp_band_set((suji_msg_body_t *)&pmsg->body);
+			break;
 
-	case OPCODE_HEATER_TEMP_SET :
-		send_rtu_heater_temp_set((suji_msg_body_t *)&pmsg->body);
-		break;
+			//		case OPCODE_ADV_PANEL_LAMP_SET :
+			//			send_rtu_adv_panel_lamp_set((suji_msg_body_t *)&pmsg->body);
+			//			break;
+			//
+			//		case OPCODE_XAVIER_CONTROL :
+			//			send_rtu_xavier_control((suji_msg_body_t *)&pmsg->body);
+			//			break;
+			//
+			//		case OPCODE_LAMP_POST_CONTROL :
+			//			send_rtu_lamp_post_control((suji_msg_body_t *)&pmsg->body);
+			//			break;
 
-	case OPCODE_ADV_PANEL_LAMP_SET :
-		send_rtu_adv_panel_lamp_set((suji_msg_body_t *)&pmsg->body);
-		break;
+		case OPCODE_STATUS_INFO :
+			send_rtu_status_info((suji_msg_body_t *)&pmsg->body);
+			break;
 
-	case OPCODE_XAVIER_CONTROL :
-		send_rtu_xavier_control((suji_msg_body_t *)&pmsg->body);
-		break;
-
-	case OPCODE_LAMP_POST_CONTROL :
-		send_rtu_lamp_post_control((suji_msg_body_t *)&pmsg->body);
-		break;
-
-	case OPCODE_STATUS_INFO :
-		send_rtu_status_info((suji_msg_body_t *)&pmsg->body);
-		break;
-
-	default :
-		printf("%s() Got UNDEFINED OP_CODE"LINE_TERM, __FUNCTION__);
-		break;
+		default :
+			printf("%s() Got UNDEFINED OP_CODE"LINE_TERM, __FUNCTION__);
+			break;
+		}
 	}
 	return true;
 }

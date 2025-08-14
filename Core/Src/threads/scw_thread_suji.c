@@ -35,8 +35,8 @@
 
 osMessageQueueId_t		sujiThreadQ;
 uint8_t 				SujiRxBuff[SUJI_RX_BUFF_SIZE];
-uint8_t 				SujiTxBuff[SUJI_TX_BUFF_SIZE];
 suji_msg_func			suji_msg_handler_tbl[SUJI_MSG_END];
+osSemaphoreId_t			suji_sem;
 
 extern DMA_HandleTypeDef hdma_uart4_rx;
 extern DMA_HandleTypeDef hdma_uart4_tx;
@@ -63,8 +63,9 @@ void scw_thread_suji (void *arg)
 
 	assert (suji_msg_handler_tbl_init() == true);
 	assert (suji_channel_open(&huart4) == true);
+	assert (osSemaphoreNew(1U, 1U, NULL) != NULL);
 
-	sujiThreadQ = osMessageQueueNew(SUJI_MSG_Q_DEPTH, sizeof(sensor_msg_t), NULL);
+	sujiThreadQ = osMessageQueueNew(SUJI_MSG_Q_DEPTH, sizeof(suji_msg_t), NULL);
 	while (1) {
 		memset (&suji_msg, 0, sizeof(suji_msg));
 		assert (osMessageQueueGet(sujiThreadQ, &suji_msg, NULL, osWaitForever) == osOK);

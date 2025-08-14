@@ -1,8 +1,0 @@
-../Core/Src/func/func_sensor.c:38:13:sensor_msg_handler_default	128	static
-../Core/Src/func/func_sensor.c:54:19:get_door_1_status	16	static
-../Core/Src/func/func_sensor.c:61:19:get_door_2_status	16	static
-../Core/Src/func/func_sensor.c:68:13:sensor_msg_handler_door_check	16	static
-../Core/Src/func/func_sensor.c:88:13:sensor_msg_handler_ht_check	16	static
-../Core/Src/func/func_sensor.c:115:13:sensor_msg_handler_adc_check	16	static
-../Core/Src/func/func_sensor.c:124:13:sensor_msg_handler_info_display	152	static
-../Core/Src/func/func_sensor.c:198:6:sensor_msg_handler_tbl_init	16	static

@@ -1,5 +1,0 @@
-../Core/Src/threads/scw_thread_sensor.c:43:13:door_check_timer_begin	8	static
-../Core/Src/threads/scw_thread_sensor.c:50:13:ht_check_timer_begin	8	static
-../Core/Src/threads/scw_thread_sensor.c:57:13:adc_check_timer_begin	8	static
-../Core/Src/threads/scw_thread_sensor.c:64:13:do_scw_info_display_timer_begin	8	static
-../Core/Src/threads/scw_thread_sensor.c:71:6:scw_thread_sensor	32	static

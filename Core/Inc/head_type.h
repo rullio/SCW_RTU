@@ -151,9 +151,19 @@ typedef enum {
 } scw_Rtu_Intr_Index_t;
 
 typedef enum {
-	SCW_DOOR_OPEN = 0,
-	SCW_DOOR_CLOSED,
+	SCW_DOOR_CLOSED = 0,
+	SCW_DOOR_OPEN,
 } scw_door_status_t;
+
+typedef enum {
+	SCW_FAN_STATE_STOP = 0,
+	SCW_FAN_STATE_WORKING,
+} scw_fan_status_t;
+
+typedef enum {
+	SCW_HEATER_STATE_STOP = 0,
+	SCW_HEATER_STATE_WORKING,
+} scw_heater_status_t;
 
 typedef struct {
 	scw_door_status_t	door_1_status;
@@ -196,6 +206,13 @@ typedef struct {
 	scw_door_t			scw_door;
 	SHT20_INFO_t		SHT20_INFO;
 	scw_adc_value_t		scw_adc_value;
+	uint8_t				watchdog_use;
+	uint8_t				watchdog_value;
+	scw_fan_status_t	scw_fan_status;
+	scw_heater_status_t	scw_heater_status;
+	int32_t				temp_band_high;
+	int32_t				temp_band_middle;
+	int32_t				temp_band_low;
 } scw_infoObj_t;
 
 typedef enum {
@@ -248,8 +265,8 @@ typedef bool (* sensor_msg_func)(sensor_msg_t *);
 // Event for SUJI thread
 // *****************************************************************************
 #define SUJI_MSG_Q_DEPTH			8
-#define SUJI_RX_BUFF_SIZE			16U
-#define SUJI_TX_BUFF_SIZE			64U
+#define SUJI_RX_BUFF_SIZE			48U
+#define SUJI_TX_BUFF_SIZE			48U
 
 typedef enum {
 	SUJI_MSG_BASE = 0,
@@ -286,9 +303,10 @@ typedef enum {
 	OPCODE_HUMIDITY				= 0x22,
 	OPCODE_WATCHDOG_USE			= 0x31,
 	OPCODE_WATCHDOG_SET			= 0x32,
-	OPCODE_FAN_TEMP_SET			= 0x41,
+	OPCODE_TEMP_BAND_SET		= 0x41,
 	OPCODE_HEATER_TEMP_SET		= 0x42,
 	OPCODE_ADV_PANEL_LAMP_SET	= 0x63,
+	OPCODE_DOOR_STATUS_CHANGE	= 0x51,
 	OPCODE_XAVIER_CONTROL		= 0x65,
 	OPCODE_LAMP_POST_CONTROL	= 0x66,
 	OPCODE_STATUS_INFO			= 0xF1,

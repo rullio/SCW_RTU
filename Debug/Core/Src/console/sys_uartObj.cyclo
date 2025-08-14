@@ -1,9 +1,0 @@
-../Core/Src/console/sys_uartObj.c:31:6:uartObj_Init	1
-../Core/Src/console/sys_uartObj.c:56:20:UART_RxPushByte	6
-../Core/Src/console/sys_uartObj.c:103:6:RxPushByte	1
-../Core/Src/console/sys_uartObj.c:109:8:UART_Read	4
-../Core/Src/console/sys_uartObj.c:142:8:UART_ReadCountGet	2
-../Core/Src/console/sys_uartObj.c:164:8:UART_ReadFreeBufferCountGet	1
-../Core/Src/console/sys_uartObj.c:170:8:UART_WriteCountGet	1
-../Core/Src/console/sys_uartObj.c:179:8:UART_Write	1
-../Core/Src/console/sys_uartObj.c:187:8:UART_WriteFreeBufferCountGet	1

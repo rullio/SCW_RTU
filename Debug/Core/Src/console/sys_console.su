@@ -1,5 +1,0 @@
-../Core/Src/console/sys_console.c:29:16:SYS_CONSOLE_Initialize	24	static
-../Core/Src/console/sys_console.c:62:12:SYS_CONSOLE_Status	32	static
-../Core/Src/console/sys_console.c:101:8:SYS_CONSOLE_Read	32	static
-../Core/Src/console/sys_console.c:118:8:SYS_CONSOLE_ReadCountGet	24	static
-../Core/Src/console/sys_console.c:134:8:SYS_CONSOLE_Write	32	static

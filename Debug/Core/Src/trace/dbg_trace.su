@@ -1,7 +1,0 @@
-../Core/Src/trace/dbg_trace.c:56:13:DbgTraceGetFileName	24	static
-../Core/Src/trace/dbg_trace.c:77:6:DbgTraceBuffer	24	static
-../Core/Src/trace/dbg_trace.c:97:13:DbgTrace_TxCpltCallback	32	static,ignoring_inline_asm
-../Core/Src/trace/dbg_trace.c:131:6:DbgTraceInit	16	static
-../Core/Src/trace/dbg_trace.c:151:8:_write	24	static
-../Core/Src/trace/dbg_trace.c:162:8:DbgTraceWrite	48	static,ignoring_inline_asm
-../Core/Src/trace/dbg_trace.c:207:6:DbgOutputTraces	24	static
