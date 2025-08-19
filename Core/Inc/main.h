@@ -33,6 +33,7 @@ extern "C" {
 /* USER CODE BEGIN Includes */
 #include <stdbool.h>
 #include <inttypes.h>
+#include <stdint.h>
 
 #include "cmsis_os.h"
 #include "timers.h"
@@ -60,7 +61,6 @@ extern "C" {
 #include "head_type.h"
 #include "head_adc.h"
 #include "sht2x.h"
-
 
 
 #include "head_data.h"

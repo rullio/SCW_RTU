@@ -25,6 +25,7 @@ SUBDIRS := \
 Core/Src \
 Core/Src/cmds \
 Core/Src/console \
+Core/Src/eeprom \
 Core/Src/func \
 Core/Src/stm \
 Core/Src/threads \

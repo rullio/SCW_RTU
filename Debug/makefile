@@ -19,6 +19,7 @@ RM := rm -rf
 -include Core/Src/threads/subdir.mk
 -include Core/Src/stm/subdir.mk
 -include Core/Src/func/subdir.mk
+-include Core/Src/eeprom/subdir.mk
 -include Core/Src/console/subdir.mk
 -include Core/Src/cmds/subdir.mk
 -include Core/Src/subdir.mk

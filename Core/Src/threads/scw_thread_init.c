@@ -34,6 +34,7 @@
 #include "main.h"
 
 bool osTimerList_init(osTimerEntry_t osTimerList[]);
+int32_t EEICA1_M24M01E_Init(uint32_t Instance);
 
 
 /**************************************************************************************************
@@ -96,6 +97,7 @@ void scw_thread_init (void *arg)
 	assert (SHT2x_Init(&hi2c1) == true);
 	assert (relay_io_init() == true);
 	assert (adc_initial_calibration() == true);
+	assert (EEICA1_M24M01E_Init(0/*EEICA1_M24M01E*/) == 0/*BSP_ERROR_NONE*/);
 
 	do_scw_info_display = false;
 	scw_banner = BANNER_ECELL;
