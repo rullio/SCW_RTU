@@ -228,16 +228,12 @@ static void scw_cmd_mute (SYS_CMD_DEVICE_NODE* pCmdIO, int argc, char **argv)
 	return;
 }
 
-char buf[100];
+
 static void scw_cmd_test (SYS_CMD_DEVICE_NODE* pCmdIO, int argc, char **argv)
 {
 	const void* cmdIoParam = pCmdIO->cmdIoParam;
 
 	if (argc != 1) goto USAGE;
-
-	strcpy (&buf[0], "L");
-	HAL_UART_Transmit_DMA(&huart4, (uint8_t *)buf, 1);
-
 	return;
 
 	USAGE :

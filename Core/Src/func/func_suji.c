@@ -34,10 +34,19 @@
 #include "main.h"
 
 extern suji_msg_func			suji_msg_handler_tbl[];
-extern osSemaphoreId_t			suji_sem;
 
-#define	GET_SUJI_SEM			osSemaphoreAcquire(suji_sem, 0);
-#define	PUT_SUJI_SEM			osSemaphoreRelease(suji_sem);
+#define FORMAT_SUJI_TX_BUFF(SUJI_TX_BUFF)					\
+		do {												\
+			memset (SUJI_TX_BUFF, 0, SUJI_TX_BUFF_SIZE);	\
+			SUJI_TX_BUFF[0] = STX;							\
+			SUJI_TX_BUFF[1] = STX;							\
+			SUJI_TX_BUFF[2] = 0;							\
+			SUJI_TX_BUFF[3] = 0;							\
+			SUJI_TX_BUFF[4] = 0;							\
+			SUJI_TX_BUFF[46] = ETX;							\
+			SUJI_TX_BUFF[47] = ETX;							\
+		} while(0)
+
 
 bool msg_send_to_managerPC(uint8_t buff[])
 {
@@ -47,7 +56,6 @@ bool msg_send_to_managerPC(uint8_t buff[])
 
 	GET_SUJI_SEM;
 	HAL_UART_Transmit_DMA(&huart4, &SujiTxBuff[0], SUJI_TX_BUFF_SIZE);
-	PUT_SUJI_SEM;
 
 	return true;
 }
@@ -55,44 +63,30 @@ bool msg_send_to_managerPC(uint8_t buff[])
 static void send_rtu_version(suji_msg_body_t *pbody)
 {
 	uint8_t rtu_version_buff[SUJI_TX_BUFF_SIZE];
-	memset (&rtu_version_buff[0], 0, SUJI_TX_BUFF_SIZE);
-	printf("%s() Got OPCODE_RTU_VERSION"LINE_TERM, __FUNCTION__);
+//	printf("%s() Got OPCODE_RTU_VERSION"LINE_TERM, __FUNCTION__);
 
-	rtu_version_buff[0] = STX;
-	rtu_version_buff[1] = STX;
-	rtu_version_buff[2] = 0;
-	rtu_version_buff[3] = 0;
-	rtu_version_buff[4] = 0;
+	FORMAT_SUJI_TX_BUFF(rtu_version_buff);
 	rtu_version_buff[5] = sizeof(FW_VERSION) + 2;
 	rtu_version_buff[6] = OPCODE_RTU_VERSION;
 	rtu_version_buff[7] = 0x01;
 	memcpy(&rtu_version_buff[8], FW_VERSION, sizeof(FW_VERSION));
-	rtu_version_buff[46] = ETX;
-	rtu_version_buff[47] = ETX;
 
 	msg_send_to_managerPC(rtu_version_buff);
-	printf("Current fw version = %s() "LINE_TERM, FW_VERSION);
+//	printf("Current fw version = %s "LINE_TERM, FW_VERSION);
 }
 
 static void send_rtu_temperature(suji_msg_body_t *pbody)
 {
 	int32_t temp_integer;
 	uint8_t temperature_buff[SUJI_TX_BUFF_SIZE];
-	memset (&temperature_buff[0], 0, SUJI_TX_BUFF_SIZE);
 	//	printf("%s() Got OPCODE_TEMPERATURE"LINE_TERM, __FUNCTION__);
 
-	temperature_buff[0] = STX;
-	temperature_buff[1] = STX;
-	temperature_buff[2] = 0;
-	temperature_buff[3] = 0;
-	temperature_buff[4] = 0;
+	FORMAT_SUJI_TX_BUFF(temperature_buff);
 	temperature_buff[5] = 6;
 	temperature_buff[6] = OPCODE_TEMPERATURE;
 	temperature_buff[7] = 0x01;
 	temp_integer = SHT2x_GetInteger(scw_infoObj.SHT20_INFO.m_tempreture);
 	memcpy(&temperature_buff[8], &temp_integer, sizeof(int32_t));
-	temperature_buff[46] = ETX;
-	temperature_buff[47] = ETX;
 
 	msg_send_to_managerPC(temperature_buff);
 	printf("Current ondo = %ld "LINE_TERM, temp_integer);
@@ -102,22 +96,14 @@ static void send_rtu_humidity(suji_msg_body_t *pbody)
 {
 	int32_t humidity_integer;
 	uint8_t humidity_buff[SUJI_TX_BUFF_SIZE];
-	memset (&humidity_buff[0], 0, SUJI_TX_BUFF_SIZE);
 	//	printf("%s() Got OPCODE_HUMIDITY"LINE_TERM, __FUNCTION__);
 
-	memset (&humidity_buff[0], 0, SUJI_TX_BUFF_SIZE);
-	humidity_buff[0] = STX;
-	humidity_buff[1] = STX;
-	humidity_buff[2] = 0;
-	humidity_buff[3] = 0;
-	humidity_buff[4] = 0;
+	FORMAT_SUJI_TX_BUFF(humidity_buff);
 	humidity_buff[5] = 6;
 	humidity_buff[6] = OPCODE_HUMIDITY;
 	humidity_buff[7] = 0x01;
 	humidity_integer = SHT2x_GetInteger(scw_infoObj.SHT20_INFO.m_humidity);
 	memcpy(&humidity_buff[8], &humidity_integer, sizeof(int32_t));
-	humidity_buff[46] = ETX;
-	humidity_buff[47] = ETX;
 
 	msg_send_to_managerPC(humidity_buff);
 	printf("Current seupdo = %ld "LINE_TERM, humidity_integer);
@@ -126,12 +112,9 @@ static void send_rtu_humidity(suji_msg_body_t *pbody)
 static void send_rtu_watchdog_use(suji_msg_body_t *pbody)
 {
 	//	printf("%s() Got OPCODE_WATCHDOG_USE"LINE_TERM, __FUNCTION__);
-
 	uint8_t watchdog_use_buff[SUJI_TX_BUFF_SIZE];
 	memcpy (watchdog_use_buff, pbody->Byte, SUJI_TX_BUFF_SIZE);
 	msg_send_to_managerPC(watchdog_use_buff);
-
-
 
 	if (watchdog_use_buff[8] == 1) printf("WATCHDOG USE"LINE_TERM);
 	else if (watchdog_use_buff[8] == 0) printf("WATCHDOG NOT USE"LINE_TERM);
@@ -192,12 +175,8 @@ static void send_rtu_status_info(suji_msg_body_t *pbody)
 {
 	printf("%s() Got OPCODE_STATUS_INFO"LINE_TERM, __FUNCTION__);
 	uint8_t rtu_status_info_buff[SUJI_TX_BUFF_SIZE];
-	memset (&rtu_status_info_buff[0], 0, SUJI_TX_BUFF_SIZE);
-	rtu_status_info_buff[0] = STX;
-	rtu_status_info_buff[1] = STX;
-	rtu_status_info_buff[2] = 0;
-	rtu_status_info_buff[3] = 0;
-	rtu_status_info_buff[4] = 0;
+	FORMAT_SUJI_TX_BUFF(rtu_status_info_buff);
+
 	rtu_status_info_buff[5] = 0x2D;
 	rtu_status_info_buff[6] = OPCODE_STATUS_INFO;
 	rtu_status_info_buff[7] = 0x01;
@@ -218,8 +197,6 @@ static void send_rtu_status_info(suji_msg_body_t *pbody)
 	int32_t humidity_integer = SHT2x_GetInteger(scw_infoObj.SHT20_INFO.m_humidity);
 	memcpy(&rtu_status_info_buff[30], &humidity_integer, sizeof(int32_t));
 
-	rtu_status_info_buff[46] = ETX;
-	rtu_status_info_buff[47] = ETX;
 	msg_send_to_managerPC(rtu_status_info_buff);
 
 	printf("watchdog use = %s"LINE_TERM, (scw_infoObj.watchdog_use == 1)?"USE":"NOT USE");

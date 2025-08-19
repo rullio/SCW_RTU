@@ -1,20 +1,20 @@
 /* USER CODE BEGIN Header */
 /**
-  ******************************************************************************
-  * @file    stm32f1xx_it.c
-  * @brief   Interrupt Service Routines.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2025 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file    stm32f1xx_it.c
+ * @brief   Interrupt Service Routines.
+ ******************************************************************************
+ * @attention
+ *
+ * Copyright (c) 2025 STMicroelectronics.
+ * All rights reserved.
+ *
+ * This software is licensed under terms that can be found in the LICENSE file
+ * in the root directory of this software component.
+ * If no LICENSE file comes with this software, it is provided AS-IS.
+ *
+ ******************************************************************************
+ */
 /* USER CODE END Header */
 
 /* Includes ------------------------------------------------------------------*/
@@ -75,91 +75,91 @@ extern TIM_HandleTypeDef htim8;
 /*           Cortex-M3 Processor Interruption and Exception Handlers          */
 /******************************************************************************/
 /**
-  * @brief This function handles Non maskable interrupt.
-  */
+ * @brief This function handles Non maskable interrupt.
+ */
 void NMI_Handler(void)
 {
-  /* USER CODE BEGIN NonMaskableInt_IRQn 0 */
+	/* USER CODE BEGIN NonMaskableInt_IRQn 0 */
 
-  /* USER CODE END NonMaskableInt_IRQn 0 */
-  /* USER CODE BEGIN NonMaskableInt_IRQn 1 */
-   while (1)
-  {
-  }
-  /* USER CODE END NonMaskableInt_IRQn 1 */
+	/* USER CODE END NonMaskableInt_IRQn 0 */
+	/* USER CODE BEGIN NonMaskableInt_IRQn 1 */
+	while (1)
+	{
+	}
+	/* USER CODE END NonMaskableInt_IRQn 1 */
 }
 
 /**
-  * @brief This function handles Hard fault interrupt.
-  */
+ * @brief This function handles Hard fault interrupt.
+ */
 void HardFault_Handler(void)
 {
-  /* USER CODE BEGIN HardFault_IRQn 0 */
+	/* USER CODE BEGIN HardFault_IRQn 0 */
 
-  /* USER CODE END HardFault_IRQn 0 */
-  while (1)
-  {
-    /* USER CODE BEGIN W1_HardFault_IRQn 0 */
-    /* USER CODE END W1_HardFault_IRQn 0 */
-  }
+	/* USER CODE END HardFault_IRQn 0 */
+	while (1)
+	{
+		/* USER CODE BEGIN W1_HardFault_IRQn 0 */
+		/* USER CODE END W1_HardFault_IRQn 0 */
+	}
 }
 
 /**
-  * @brief This function handles Memory management fault.
-  */
+ * @brief This function handles Memory management fault.
+ */
 void MemManage_Handler(void)
 {
-  /* USER CODE BEGIN MemoryManagement_IRQn 0 */
+	/* USER CODE BEGIN MemoryManagement_IRQn 0 */
 
-  /* USER CODE END MemoryManagement_IRQn 0 */
-  while (1)
-  {
-    /* USER CODE BEGIN W1_MemoryManagement_IRQn 0 */
-    /* USER CODE END W1_MemoryManagement_IRQn 0 */
-  }
+	/* USER CODE END MemoryManagement_IRQn 0 */
+	while (1)
+	{
+		/* USER CODE BEGIN W1_MemoryManagement_IRQn 0 */
+		/* USER CODE END W1_MemoryManagement_IRQn 0 */
+	}
 }
 
 /**
-  * @brief This function handles Prefetch fault, memory access fault.
-  */
+ * @brief This function handles Prefetch fault, memory access fault.
+ */
 void BusFault_Handler(void)
 {
-  /* USER CODE BEGIN BusFault_IRQn 0 */
+	/* USER CODE BEGIN BusFault_IRQn 0 */
 
-  /* USER CODE END BusFault_IRQn 0 */
-  while (1)
-  {
-    /* USER CODE BEGIN W1_BusFault_IRQn 0 */
-    /* USER CODE END W1_BusFault_IRQn 0 */
-  }
+	/* USER CODE END BusFault_IRQn 0 */
+	while (1)
+	{
+		/* USER CODE BEGIN W1_BusFault_IRQn 0 */
+		/* USER CODE END W1_BusFault_IRQn 0 */
+	}
 }
 
 /**
-  * @brief This function handles Undefined instruction or illegal state.
-  */
+ * @brief This function handles Undefined instruction or illegal state.
+ */
 void UsageFault_Handler(void)
 {
-  /* USER CODE BEGIN UsageFault_IRQn 0 */
+	/* USER CODE BEGIN UsageFault_IRQn 0 */
 
-  /* USER CODE END UsageFault_IRQn 0 */
-  while (1)
-  {
-    /* USER CODE BEGIN W1_UsageFault_IRQn 0 */
-    /* USER CODE END W1_UsageFault_IRQn 0 */
-  }
+	/* USER CODE END UsageFault_IRQn 0 */
+	while (1)
+	{
+		/* USER CODE BEGIN W1_UsageFault_IRQn 0 */
+		/* USER CODE END W1_UsageFault_IRQn 0 */
+	}
 }
 
 /**
-  * @brief This function handles Debug monitor.
-  */
+ * @brief This function handles Debug monitor.
+ */
 void DebugMon_Handler(void)
 {
-  /* USER CODE BEGIN DebugMonitor_IRQn 0 */
+	/* USER CODE BEGIN DebugMonitor_IRQn 0 */
 
-  /* USER CODE END DebugMonitor_IRQn 0 */
-  /* USER CODE BEGIN DebugMonitor_IRQn 1 */
+	/* USER CODE END DebugMonitor_IRQn 0 */
+	/* USER CODE BEGIN DebugMonitor_IRQn 1 */
 
-  /* USER CODE END DebugMonitor_IRQn 1 */
+	/* USER CODE END DebugMonitor_IRQn 1 */
 }
 
 /******************************************************************************/
@@ -170,198 +170,204 @@ void DebugMon_Handler(void)
 /******************************************************************************/
 
 /**
-  * @brief This function handles RTC global interrupt.
-  */
+ * @brief This function handles RTC global interrupt.
+ */
 void RTC_IRQHandler(void)
 {
-  /* USER CODE BEGIN RTC_IRQn 0 */
+	/* USER CODE BEGIN RTC_IRQn 0 */
 	IntrObjEntryList[SCW_RTU_INTR_INDEX_RTC_IRQn].IntrCount++;
 
-  /* USER CODE END RTC_IRQn 0 */
-  HAL_RTCEx_RTCIRQHandler(&hrtc);
-  /* USER CODE BEGIN RTC_IRQn 1 */
+	/* USER CODE END RTC_IRQn 0 */
+	HAL_RTCEx_RTCIRQHandler(&hrtc);
+	/* USER CODE BEGIN RTC_IRQn 1 */
 
-  /* USER CODE END RTC_IRQn 1 */
+	/* USER CODE END RTC_IRQn 1 */
 }
 
 /**
-  * @brief This function handles DMA1 channel1 global interrupt.
-  */
+ * @brief This function handles DMA1 channel1 global interrupt.
+ */
 void DMA1_Channel1_IRQHandler(void)
 {
-  /* USER CODE BEGIN DMA1_Channel1_IRQn 0 */
+	/* USER CODE BEGIN DMA1_Channel1_IRQn 0 */
 	IntrObjEntryList[SCW_RTU_INTR_INDEX_DMA1_Channel1_IRQn].IntrCount++;
 
-  /* USER CODE END DMA1_Channel1_IRQn 0 */
-  HAL_DMA_IRQHandler(&hdma_adc1);
-  /* USER CODE BEGIN DMA1_Channel1_IRQn 1 */
+	/* USER CODE END DMA1_Channel1_IRQn 0 */
+	HAL_DMA_IRQHandler(&hdma_adc1);
+	/* USER CODE BEGIN DMA1_Channel1_IRQn 1 */
 
-  /* USER CODE END DMA1_Channel1_IRQn 1 */
+	/* USER CODE END DMA1_Channel1_IRQn 1 */
 }
 
 /**
-  * @brief This function handles DMA1 channel4 global interrupt.
-  */
+ * @brief This function handles DMA1 channel4 global interrupt.
+ */
 void DMA1_Channel4_IRQHandler(void)
 {
-  /* USER CODE BEGIN DMA1_Channel4_IRQn 0 */
+	/* USER CODE BEGIN DMA1_Channel4_IRQn 0 */
 	IntrObjEntryList[SCW_RTU_INTR_INDEX_DMA1_Channel4_IRQn].IntrCount++;
 
-  /* USER CODE END DMA1_Channel4_IRQn 0 */
-  HAL_DMA_IRQHandler(&hdma_usart1_tx);
-  /* USER CODE BEGIN DMA1_Channel4_IRQn 1 */
+	/* USER CODE END DMA1_Channel4_IRQn 0 */
+	HAL_DMA_IRQHandler(&hdma_usart1_tx);
+	/* USER CODE BEGIN DMA1_Channel4_IRQn 1 */
 
-  /* USER CODE END DMA1_Channel4_IRQn 1 */
+	/* USER CODE END DMA1_Channel4_IRQn 1 */
 }
 
 /**
-  * @brief This function handles ADC1 and ADC2 global interrupts.
-  */
+ * @brief This function handles ADC1 and ADC2 global interrupts.
+ */
 void ADC1_2_IRQHandler(void)
 {
-  /* USER CODE BEGIN ADC1_2_IRQn 0 */
+	/* USER CODE BEGIN ADC1_2_IRQn 0 */
 	IntrObjEntryList[SCW_RTU_INTR_INDEX_ADC1_2_IRQn].IntrCount++;
 
-  /* USER CODE END ADC1_2_IRQn 0 */
-  HAL_ADC_IRQHandler(&hadc1);
-  /* USER CODE BEGIN ADC1_2_IRQn 1 */
+	/* USER CODE END ADC1_2_IRQn 0 */
+	HAL_ADC_IRQHandler(&hadc1);
+	/* USER CODE BEGIN ADC1_2_IRQn 1 */
 
-  /* USER CODE END ADC1_2_IRQn 1 */
+	/* USER CODE END ADC1_2_IRQn 1 */
 }
 
 /**
-  * @brief This function handles I2C1 event interrupt.
-  */
+ * @brief This function handles I2C1 event interrupt.
+ */
 void I2C1_EV_IRQHandler(void)
 {
-  /* USER CODE BEGIN I2C1_EV_IRQn 0 */
+	/* USER CODE BEGIN I2C1_EV_IRQn 0 */
 	IntrObjEntryList[SCW_RTU_INTR_INDEX_I2C1_EV_IRQn].IntrCount++;
 
-  /* USER CODE END I2C1_EV_IRQn 0 */
-  HAL_I2C_EV_IRQHandler(&hi2c1);
-  /* USER CODE BEGIN I2C1_EV_IRQn 1 */
+	/* USER CODE END I2C1_EV_IRQn 0 */
+	HAL_I2C_EV_IRQHandler(&hi2c1);
+	/* USER CODE BEGIN I2C1_EV_IRQn 1 */
 
-  /* USER CODE END I2C1_EV_IRQn 1 */
+	/* USER CODE END I2C1_EV_IRQn 1 */
 }
 
 /**
-  * @brief This function handles I2C1 error interrupt.
-  */
+ * @brief This function handles I2C1 error interrupt.
+ */
 void I2C1_ER_IRQHandler(void)
 {
-  /* USER CODE BEGIN I2C1_ER_IRQn 0 */
+	/* USER CODE BEGIN I2C1_ER_IRQn 0 */
 	IntrObjEntryList[SCW_RTU_INTR_INDEX_I2C1_ER_IRQn].IntrCount++;
 
-  /* USER CODE END I2C1_ER_IRQn 0 */
-  HAL_I2C_ER_IRQHandler(&hi2c1);
-  /* USER CODE BEGIN I2C1_ER_IRQn 1 */
+	/* USER CODE END I2C1_ER_IRQn 0 */
+	HAL_I2C_ER_IRQHandler(&hi2c1);
+	/* USER CODE BEGIN I2C1_ER_IRQn 1 */
 
-  /* USER CODE END I2C1_ER_IRQn 1 */
+	/* USER CODE END I2C1_ER_IRQn 1 */
 }
 
 /**
-  * @brief This function handles USART1 global interrupt.
-  */
+ * @brief This function handles USART1 global interrupt.
+ */
 void USART1_IRQHandler(void)
 {
-  /* USER CODE BEGIN USART1_IRQn 0 */
+	/* USER CODE BEGIN USART1_IRQn 0 */
 	IntrObjEntryList[SCW_RTU_INTR_INDEX_USART1_IRQn].IntrCount++;
 
-  /* USER CODE END USART1_IRQn 0 */
-  HAL_UART_IRQHandler(&huart1);
-  /* USER CODE BEGIN USART1_IRQn 1 */
+	/* USER CODE END USART1_IRQn 0 */
+	HAL_UART_IRQHandler(&huart1);
+	/* USER CODE BEGIN USART1_IRQn 1 */
 
-  /* USER CODE END USART1_IRQn 1 */
+	/* USER CODE END USART1_IRQn 1 */
 }
 
 /**
-  * @brief This function handles RTC alarm interrupt through EXTI line 17.
-  */
+ * @brief This function handles RTC alarm interrupt through EXTI line 17.
+ */
 void RTC_Alarm_IRQHandler(void)
 {
-  /* USER CODE BEGIN RTC_Alarm_IRQn 0 */
+	/* USER CODE BEGIN RTC_Alarm_IRQn 0 */
 	IntrObjEntryList[SCW_RTU_INTR_INDEX_RTC_Alarm_IRQn].IntrCount++;
 
-  /* USER CODE END RTC_Alarm_IRQn 0 */
-  HAL_RTC_AlarmIRQHandler(&hrtc);
-  /* USER CODE BEGIN RTC_Alarm_IRQn 1 */
+	/* USER CODE END RTC_Alarm_IRQn 0 */
+	HAL_RTC_AlarmIRQHandler(&hrtc);
+	/* USER CODE BEGIN RTC_Alarm_IRQn 1 */
 
-  /* USER CODE END RTC_Alarm_IRQn 1 */
+	/* USER CODE END RTC_Alarm_IRQn 1 */
 }
 
 /**
-  * @brief This function handles TIM8 update interrupt.
-  */
+ * @brief This function handles TIM8 update interrupt.
+ */
 void TIM8_UP_IRQHandler(void)
 {
-  /* USER CODE BEGIN TIM8_UP_IRQn 0 */
+	/* USER CODE BEGIN TIM8_UP_IRQn 0 */
 	IntrObjEntryList[SCW_RTU_INTR_INDEX_TIM8_UP_IRQn].IntrCount++;
 
-  /* USER CODE END TIM8_UP_IRQn 0 */
-  HAL_TIM_IRQHandler(&htim8);
-  /* USER CODE BEGIN TIM8_UP_IRQn 1 */
+	/* USER CODE END TIM8_UP_IRQn 0 */
+	HAL_TIM_IRQHandler(&htim8);
+	/* USER CODE BEGIN TIM8_UP_IRQn 1 */
 
-  /* USER CODE END TIM8_UP_IRQn 1 */
+	/* USER CODE END TIM8_UP_IRQn 1 */
 }
 
 /**
-  * @brief This function handles UART4 global interrupt.
-  */
+ * @brief This function handles UART4 global interrupt.
+ */
 void UART4_IRQHandler(void)
 {
-  /* USER CODE BEGIN UART4_IRQn 0 */
+	/* USER CODE BEGIN UART4_IRQn 0 */
 	IntrObjEntryList[SCW_RTU_INTR_INDEX_UART4_IRQn].IntrCount++;
 
-  /* USER CODE END UART4_IRQn 0 */
-  HAL_UART_IRQHandler(&huart4);
-  /* USER CODE BEGIN UART4_IRQn 1 */
+	/* USER CODE END UART4_IRQn 0 */
+	HAL_UART_IRQHandler(&huart4);
+	/* USER CODE BEGIN UART4_IRQn 1 */
 
-  /* USER CODE END UART4_IRQn 1 */
+	/* USER CODE END UART4_IRQn 1 */
 }
 
 /**
-  * @brief This function handles UART5 global interrupt.
-  */
+ * @brief This function handles UART5 global interrupt.
+ */
 void UART5_IRQHandler(void)
 {
-  /* USER CODE BEGIN UART5_IRQn 0 */
+	/* USER CODE BEGIN UART5_IRQn 0 */
 	IntrObjEntryList[SCW_RTU_INTR_INDEX_UART5_IRQn].IntrCount++;
 
-  /* USER CODE END UART5_IRQn 0 */
-  HAL_UART_IRQHandler(&huart5);
-  /* USER CODE BEGIN UART5_IRQn 1 */
+	/* USER CODE END UART5_IRQn 0 */
+	HAL_UART_IRQHandler(&huart5);
+	/* USER CODE BEGIN UART5_IRQn 1 */
 
-  /* USER CODE END UART5_IRQn 1 */
+	/* USER CODE END UART5_IRQn 1 */
 }
 
 /**
-  * @brief This function handles DMA2 channel3 global interrupt.
-  */
+ * @brief This function handles DMA2 channel3 global interrupt.
+ */
 void DMA2_Channel3_IRQHandler(void)
 {
-  /* USER CODE BEGIN DMA2_Channel3_IRQn 0 */
+	/* USER CODE BEGIN DMA2_Channel3_IRQn 0 */
 	IntrObjEntryList[SCW_RTU_INTR_INDEX_DMA2_Channel3_IRQn].IntrCount++;
 
-  /* USER CODE END DMA2_Channel3_IRQn 0 */
-  HAL_DMA_IRQHandler(&hdma_uart4_rx);
-  /* USER CODE BEGIN DMA2_Channel3_IRQn 1 */
+	/* USER CODE END DMA2_Channel3_IRQn 0 */
+	HAL_DMA_IRQHandler(&hdma_uart4_rx);
+	/* USER CODE BEGIN DMA2_Channel3_IRQn 1 */
 
-  /* USER CODE END DMA2_Channel3_IRQn 1 */
+	/* USER CODE END DMA2_Channel3_IRQn 1 */
 }
 
 /**
-  * @brief This function handles DMA2 channel4 and channel5 global interrupts.
-  */
+ * @brief This function handles DMA2 channel4 and channel5 global interrupts.
+ */
 void DMA2_Channel4_5_IRQHandler(void)
 {
-  /* USER CODE BEGIN DMA2_Channel4_5_IRQn 0 */
+	/* USER CODE BEGIN DMA2_Channel4_5_IRQn 0 */
 	IntrObjEntryList[SCW_RTU_INTR_INDEX_DMA2_Channel4_5_IRQn].IntrCount++;
+	// RM0008 STM32F103xx reference manual 의 page 284. DMA_ISR 을 보면 이것은 5 번 channel 로 되며 Half Transfer cplt 때는 HTIF5 가 set 되고 Transfer cplt 때는 0 이기 때문에 이렇게 사용한다.
+	// __HAL_DMA_DISABLE_IT() 를 써도 효과가 별로 없어서 아래처럼 하는 것이 가장 확실하다.
+	if (READ_BIT(hdma_uart4_tx.DmaBaseAddress->ISR, 0x40000) == 0) {
+		PUT_SUJI_SEM;
+		//		printf("ISR = %lx"LINE_TERM, hdma_uart4_tx.DmaBaseAddress->ISR);
+		//		printf("CCR = %lx"LINE_TERM, hdma_uart4_tx.Instance->CCR);
+	}
+	/* USER CODE END DMA2_Channel4_5_IRQn 0 */
+	HAL_DMA_IRQHandler(&hdma_uart4_tx);
+	/* USER CODE BEGIN DMA2_Channel4_5_IRQn 1 */
 
-  /* USER CODE END DMA2_Channel4_5_IRQn 0 */
-  HAL_DMA_IRQHandler(&hdma_uart4_tx);
-  /* USER CODE BEGIN DMA2_Channel4_5_IRQn 1 */
-
-  /* USER CODE END DMA2_Channel4_5_IRQn 1 */
+	/* USER CODE END DMA2_Channel4_5_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */

@@ -166,6 +166,12 @@ void Error_Handler(void);
 #define _12v_sw2_on			HAL_GPIO_WritePin(_12V_SW2_GPIO_Port, _12V_SW2_Pin, GPIO_PIN_SET)
 #define _12v_sw2_off		HAL_GPIO_WritePin(_12V_SW2_GPIO_Port, _12V_SW2_Pin, GPIO_PIN_RESET)
 
+// manger PC 와의 uart 통신에서 사용하는 semaphore.
+extern osSemaphoreId_t			suji_sem;
+#define	GET_SUJI_SEM			osSemaphoreAcquire(suji_sem, 0);
+#define	PUT_SUJI_SEM			osSemaphoreRelease(suji_sem);
+
+
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
